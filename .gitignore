@@ -1,0 +1,105 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+
+# production
+/build
+
+# misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# My Custom
+.temp
+
+# Node.js dependencies
+/node_modules/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment variables
+.env
+
+# Build output
+/dist
+/build
+
+# Dependency directories
+jspm_packages/
+
+# IDE or Editor directories
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Temporary files created by the editor
+*.swp
+*.swo
+
+# Tye files for cross-platform .NET and C# projects (if you happen to use)
+.tye/
+
+# Docker configuration
+docker-compose.override.yml
+
+# Jest coverage output
+/coverage/
+
+# npm package lock files (if you are using yarn instead of npm)
+# package-lock.json (if you use yarn, it's recommended to remove this from git)
+# yarn.lock (if you use yarn, you should consider using yarn.lock only and remove package-lock.json)
+package-lock.json
+yarn.lock
+
+# VS Code extensions and settings (optional)
+.vscode/
+
+# Node.js process pid files
+*.pid

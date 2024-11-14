@@ -95,7 +95,7 @@ docker-compose.override.yml
 # npm package lock files (if you are using yarn instead of npm)
 # package-lock.json (if you use yarn, it's recommended to remove this from git)
 # yarn.lock (if you use yarn, you should consider using yarn.lock only and remove package-lock.json)
-package-lock.json
+# package-lock.json
 yarn.lock
 
 # VS Code extensions and settings (optional)

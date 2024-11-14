@@ -25,3 +25,13 @@ const connectDB = async () => {
 
 // Export the connection function so it can be used in server.js
 module.exports = connectDB;
+
+
+// // Access MongoDB URI
+// const mongoUri = process.env.MONGODB_URI;
+
+// // Access JWT secret
+// const jwtSecret = process.env.JWT_SECRET;
+
+// // Example usage
+// mongoose.connect(mongoUri, { useNewUrlParser: true, useUnifiedTopology: true });

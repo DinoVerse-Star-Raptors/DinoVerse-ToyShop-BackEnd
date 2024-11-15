@@ -15,6 +15,11 @@ app.use(helmet());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Middleware to handle GET requests to the root endpoint
+app.get('/', (req, res) => {
+  res.send('Dino Think on Vercel');
+});
+
 // Basic health check endpoint
 app.get('/api/health', (req, res) => {
   res.status(200).json({
@@ -97,11 +102,6 @@ function authenticateRequest(req, res, next) {
   // For production, use proper JWT validation or your preferred auth method
   next();
 }
-
-// Middleware to handle GET requests to the root endpoint
-app.get('/', (req, res) => {
-  res.send('Dino Think on Vercel');
-});
 
 // Handle serverless environment
 if (process.env.NODE_ENV !== 'production') {

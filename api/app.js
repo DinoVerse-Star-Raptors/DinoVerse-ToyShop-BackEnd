@@ -1,199 +1,42 @@
-// https://github.com/mongodb-university/atlas_starter_nodejs.git
+// const express = require('express');
+// const app = express();
 
-require('dotenv').config(); // Load environment variables from .env file
-const { MongoClient } = require('mongodb');
+// app.get('/', (req, res) => res.send('Express on Vercel'));
 
-async function run() {
-  // Fetch the MongoDB URI from the environment variable
-  const uri = process.env.MONGO_URI;
+// app.listen(3000, () => console.log('Server ready on port 3000.'));
 
-  if (!uri) {
-    console.error('MongoDB URI is not defined in .env file');
-    process.exit(1); // Exit the process if the URI is missing
-  }
+// module.exports = app;
 
-  // The MongoClient is the object that references the connection to our datastore (Atlas, for example)
-  const client = new MongoClient(uri);
+const express = require('express');
+const cors = require('cors');
 
-  // The connect() method does not attempt a connection; instead it instructs
-  // the driver to connect using the settings provided when a connection
-  // is required.
-  await client.connect();
+const app = express();
 
-  // Provide the name of the database and collection you want to use.
-  // If the database and/or collection do not exist, the driver and Atlas
-  // will create them automatically when you first write data.
-  const dbName = 'myDatabase';
-  const collectionName = 'recipes';
+// Middleware to parse JSON requests
+app.use(express.json());
 
-  // Create references to the database and collection in order to run
-  // operations on them.
-  const database = client.db(dbName);
-  const collection = database.collection(collectionName);
+// Middleware to handle CORS (Cross-Origin Resource Sharing)
+app.use(
+  cors({
+    origin: '*', // Allow all origins (use cautiously in production)
+  })
+);
 
-  /*
-   *  *** INSERT DOCUMENTS ***
-   *
-   * You can insert individual documents using collection.insert().
-   * In this example, we're going to create four documents and then
-   * insert them all in one call with collection.insertMany().
-   */
+// Middleware to handle GET requests to the root endpoint
+app.get('/', (req, res) => {
+  res.send('Express on Vercel in API Folder');
+});
 
-  const recipes = [
-    {
-      name: 'elotes',
-      ingredients: [
-        'corn',
-        'mayonnaise',
-        'cotija cheese',
-        'sour cream',
-        'lime',
-      ],
-      prepTimeInMinutes: 35,
-    },
-    {
-      name: 'loco moco',
-      ingredients: [
-        'ground beef',
-        'butter',
-        'onion',
-        'egg',
-        'bread bun',
-        'mushrooms',
-      ],
-      prepTimeInMinutes: 54,
-    },
-    {
-      name: 'patatas bravas',
-      ingredients: [
-        'potato',
-        'tomato',
-        'olive oil',
-        'onion',
-        'garlic',
-        'paprika',
-      ],
-      prepTimeInMinutes: 80,
-    },
-    {
-      name: 'fried rice',
-      ingredients: [
-        'rice',
-        'soy sauce',
-        'egg',
-        'onion',
-        'pea',
-        'carrot',
-        'sesame oil',
-      ],
-      prepTimeInMinutes: 40,
-    },
-  ];
+// Use the PORT from environment variables or default to 3000
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server ready on port ${PORT}.`);
+});
 
-  try {
-    const insertManyResult = await collection.insertMany(recipes);
-    console.log(
-      `${insertManyResult.insertedCount} documents successfully inserted.\n`
-    );
-  } catch (err) {
-    console.error(
-      `Something went wrong trying to insert the new documents: ${err}\n`
-    );
-  }
+// Export the Express app for use with serverless functions
+// module.exports = app;
 
-  /*
-   * *** FIND DOCUMENTS ***
-   *
-   * Now that we have data in Atlas, we can read it. To retrieve all of
-   * the data in a collection, we call Find() with an empty filter.
-   * The Builders class is very helpful when building complex
-   * filters, and is used here to show its most basic use.
-   */
-
-  const findQuery = { prepTimeInMinutes: { $lt: 45 } };
-
-  try {
-    const cursor = await collection.find(findQuery).sort({ name: 1 });
-    await cursor.forEach((recipe) => {
-      console.log(
-        `${recipe.name} has ${recipe.ingredients.length} ingredients and takes ${recipe.prepTimeInMinutes} minutes to make.`
-      );
-    });
-    // add a linebreak
-    console.log();
-  } catch (err) {
-    console.error(
-      `Something went wrong trying to find the documents: ${err}\n`
-    );
-  }
-
-  // We can also find a single document. Let's find the first document
-  // that has the string "potato" in the ingredients list.
-  const findOneQuery = { ingredients: 'potato' };
-
-  try {
-    const findOneResult = await collection.findOne(findOneQuery);
-    if (findOneResult === null) {
-      console.log(
-        "Couldn't find any recipes that contain 'potato' as an ingredient.\n"
-      );
-    } else {
-      console.log(
-        `Found a recipe with 'potato' as an ingredient:\n${JSON.stringify(findOneResult)}\n`
-      );
-    }
-  } catch (err) {
-    console.error(`Something went wrong trying to find one document: ${err}\n`);
-  }
-
-  /*
-   * *** UPDATE A DOCUMENT ***
-   *
-   * You can update a single document or multiple documents in a single call.
-   *
-   * Here we update the PrepTimeInMinutes value on the document we
-   * just found.
-   */
-  const updateDoc = { $set: { prepTimeInMinutes: 72 } };
-
-  // The following updateOptions document specifies that we want the *updated*
-  // document to be returned. By default, we get the document as it was *before*
-  // the update.
-  const updateOptions = { returnOriginal: false };
-
-  try {
-    const updateResult = await collection.findOneAndUpdate(
-      findOneQuery,
-      updateDoc,
-      updateOptions
-    );
-    console.log(
-      `Here is the updated document:\n${JSON.stringify(updateResult.value)}\n`
-    );
-  } catch (err) {
-    console.error(
-      `Something went wrong trying to update one document: ${err}\n`
-    );
-  }
-
-  /*      *** DELETE DOCUMENTS ***
-   *
-   *      As with other CRUD methods, you can delete a single document
-   *      or all documents that match a specified filter. To delete all
-   *      of the documents in a collection, pass an empty filter to
-   *      the DeleteMany() method. In this example, we'll delete two of
-   *      the recipes.
-   */
-
-  const deleteQuery = { name: { $in: ['elotes', 'fried rice'] } };
-  try {
-    const deleteResult = await collection.deleteMany(deleteQuery);
-    console.log(`Deleted ${deleteResult.deletedCount} documents\n`);
-  } catch (err) {
-    console.error(`Something went wrong trying to delete documents: ${err}\n`);
-  }
-
-  // Make sure to call close() on your client to perform cleanup operations
-  await client.close();
-}
-run().catch(console.dir);
+// Export the Express app as a serverless function for Vercel
+module.exports = (req, res) => {
+  app(req, res); // Vercel invokes this handler for each request
+};

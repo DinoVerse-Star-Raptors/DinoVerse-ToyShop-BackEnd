@@ -9,7 +9,7 @@
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "/api/app.js"
+      "dest": "index.js"
     }
   ],
   "env": {
@@ -47,7 +47,7 @@
   "rewrites": [
     {
       "source": "/(.*)",
-      "destination": "/api/app.js"
+      "destination": "index.js"
     }
   ]
 }

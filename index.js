@@ -17,7 +17,8 @@ app.use(express.urlencoded({ extended: true }));
 
 // Middleware to handle GET requests to the root endpoint
 app.get('/', (req, res) => {
-  res.send('Dino Think on Vercel');
+  res.send('Welcome to Dino Think on Vercel!');
+  if (req) console.log('Welcome to Dino Think');
 });
 
 // Basic health check endpoint
@@ -26,11 +27,13 @@ app.get('/api/health', (req, res) => {
     status: 'ok',
     timestamp: new Date().toISOString(),
   });
+  if (req) console.log('ok');
 });
 
 // Example protected route
 app.get('/api/protected', authenticateRequest, (req, res) => {
   res.json({ message: 'Access granted to protected route' });
+  if (req) console.log('Access granted to protected route');
 });
 
 // Example API endpoints

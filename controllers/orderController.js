@@ -1,6 +1,6 @@
 const Order = require('../models/Order'); // Assuming an Order model
 const Product = require('../models/Product'); // Assuming a Product model
-const User = require('../models/User'); // Assuming a User model
+// const User = require('../models/User'); // Assuming a User model
 
 // Create a new order
 const createOrder = async (req, res) => {

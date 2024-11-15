@@ -49,7 +49,7 @@
 //     console.log('Connected to MongoDB');
 
 //     // Reference the specific database and collection
-//     const db = client.db('dinoCore');
+//     const db = client.db('dino_db');
 //     const collection = db.collection('childDevelopments');
 
 //     // Insert the categories into the collection

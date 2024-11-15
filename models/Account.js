@@ -1,8 +1,9 @@
-import mongoose from 'mongoose';
-import bcrypt from 'bcryptjs'; // For hashing passwords
-import validator from 'validator'; // For input validation
-import { nanoid } from 'nanoid'; // For generating unique user IDs
+const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs'); // For hashing passwords
+const validator = require('validator'); // For input validation
+const { nanoid } = require('nanoid'); // For generating unique user IDs
 
+// Address schema
 const addressSchema = new mongoose.Schema(
   {
     address: {
@@ -173,4 +174,4 @@ userSchema.methods.matchPassword = async function (enteredPassword) {
 // Create and export User model
 const User = mongoose.model('User', userSchema);
 
-export default User;
+module.exports = User;

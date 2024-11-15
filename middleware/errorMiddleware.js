@@ -6,7 +6,8 @@
 
 const errorMiddleware = (err, req, res, next) => {
   // Log the error for debugging (you can add more logging functionality here)
-  console.error(err);
+  if (req && next) console.error(err);
+  else console.error(err);
 
   // Default status code
   let statusCode = err.statusCode || 500;

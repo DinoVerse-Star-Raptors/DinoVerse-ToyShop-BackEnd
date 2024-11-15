@@ -118,6 +118,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 module.exports = app;
 
+// https://typicode.github.io/husky/get-started.html
 // const express = require('express');
 // const cors = require('cors');
 

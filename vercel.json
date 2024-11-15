@@ -15,12 +15,6 @@
   "env": {
     "NODE_ENV": "production"
   },
-  "functions": {
-    "api/index.js": {
-      "memory": 1024,
-      "maxDuration": 10
-    }
-  },
   "headers": [
     {
       "source": "/(.*)",

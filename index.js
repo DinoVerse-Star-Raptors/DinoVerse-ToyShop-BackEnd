@@ -98,6 +98,11 @@ function authenticateRequest(req, res, next) {
   next();
 }
 
+// Middleware to handle GET requests to the root endpoint
+app.get('/', (req, res) => {
+  res.send('Dino Think on Vercel');
+});
+
 // Handle serverless environment
 if (process.env.NODE_ENV !== 'production') {
   const PORT = process.env.PORT || 3000;

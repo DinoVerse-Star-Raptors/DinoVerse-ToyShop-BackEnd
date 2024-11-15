@@ -1,0 +1,26 @@
+[
+  {
+    "time": "07:00",
+    "task": "Wake up"
+  },
+  {
+    "time": "07:30",
+    "task": "Exercise"
+  },
+  {
+    "time": "08:00",
+    "task": "Breakfast"
+  },
+  {
+    "time": "08:30",
+    "task": "Shower"
+  },
+  {
+    "time": "09:00",
+    "task": "Start work"
+  },
+  {
+    "time": "10:00",
+    "task": "Check emails"
+  }
+]

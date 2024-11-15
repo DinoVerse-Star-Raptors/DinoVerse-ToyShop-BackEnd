@@ -62,6 +62,7 @@ app.use((err, req, res, next) => {
         ? err.message
         : 'Internal server error',
   });
+  if (req && next) console.log('Internal server error');
 });
 
 // 404 handler
@@ -70,6 +71,7 @@ app.use((req, res) => {
     success: false,
     message: 'Route not found',
   });
+  if (req) console.log('Route not found');
 });
 
 // Basic authentication middleware

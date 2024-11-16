@@ -1,171 +1,78 @@
+// models/Tag.js
 const mongoose = require('mongoose');
-const { Schema } = mongoose;
+const Schema = mongoose.Schema;
 
+// Define the schema for the "Tag" model
 const tagSchema = new Schema(
   {
-    // Identification Fields
-    id: {
-      type: Number,
-      required: true,
-      unique: true, // Ensures uniqueness for tagId
-      index: true, // Index for efficient queries by id
-      min: [100, 'ID must be a positive integer'], // Ensure positive integer
-      max: [999, 'ID must be a positive integer'],
-    },
     handle: {
       type: String,
-      required: true,
-      unique: true, // Ensures uniqueness for efficient lookups
-      index: true, // Add index for faster queries on handle
-      match: [
-        /^[a-zA-Z0-9_-]+$/,
-        'Handle must be alphanumeric, with underscores or hyphens only',
-      ], // Only alphanumeric, hyphens, and underscores allowed
-      minlength: [3, 'Handle must be at least 3 characters long'], // Minimum length of handle
-      maxlength: [50, 'Handle must be less than 50 characters'], // Maximum length of handle
+      required: [true, 'Handle is required'],
+      unique: true,
+      minlength: [2, 'Handle must be at least 2 characters long'],
+      maxlength: [100, 'Handle cannot exceed 100 characters long'],
     },
-
-    // Metadata Fields
     name: {
       type: String,
-      required: true, // Tag name is required
-      unique: true, // Ensures uniqueness for efficient lookups
-      minlength: [3, 'Name must be at least 3 characters long'], // Minimum length of name
-      maxlength: [100, 'Name must be less than 100 characters'], // Maximum length of name
+      required: [true, 'Name is required'],
+      minlength: [3, 'Name must be at least 3 characters long'],
+      maxlength: [100, 'Name cannot exceed 100 characters'],
     },
-    shortName: {
-      type: String,
-      default: '',
-      minlength: [3, 'Name must be at least 3 characters long'], // Minimum length of shortName
-      maxlength: [50, 'Short name must be less than 50 characters'], // Maximum length of shortName
+    tagNumber: {
+      type: Number,
+      required: [true, 'Tag number is required'],
+      unique: true,
+      min: [100, 'Tag number must be greater than or equal to 100'],
+      max: [999, 'Tag number must be less than or equal to 999'],
     },
-    description: {
-      type: String,
-      default: '',
-      maxlength: [500, 'Description must be less than 500 characters'], // Maximum length of description
+    isActive: {
+      type: Boolean,
+      required: true,
+      default: true,
+    },
+    parentTagNumber: {
+      type: Number,
+      default: 101,
+      min: [100, 'Tag number must be greater than or equal to 100'],
+      max: [999, 'Tag number must be less than or equal to 999'],
     },
     imageUrl: {
       type: String,
-      default: null, // URL for the tag image (nullable)
-      match: [/^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/, 'Invalid URL format'], // Basic URL validation
-    },
-
-    // SEO & Marketing Fields
-    seoTitle: {
-      type: String,
-      default: '',
-      maxlength: [70, 'SEO title must be less than 70 characters'], // SEO title length
-    },
-    seoDescription: {
-      type: String,
-      default: '',
-      maxlength: [160, 'SEO description must be less than 160 characters'], // SEO description length
-    },
-    metaKeywords: {
-      type: [String], // Array of meta keywords for SEO
-      default: [],
-      validate: {
-        validator: function (arr) {
-          return arr.every(
-            (keyword) => typeof keyword === 'string' && keyword.length <= 50
-          ); // Ensure each keyword is a string of max length 50
-        },
-        message:
-          'Each keyword must be a string with a maximum length of 50 characters',
-      },
-    },
-    relativeTags: {
-      type: [String], // Array of related tag handles (or tag IDs)
-      default: [],
-      validate: {
-        validator: function (arr) {
-          return arr.every(
-            (tag) => typeof tag === 'string' && tag.length <= 100
-          ); // Ensure each related tag handle is a string of max length 100
-        },
-        message:
-          'Each related tag handle must be a string with a maximum length of 50 characters',
-      },
-    },
-
-    // Hierarchical Fields
-    parentId: {
-      type: Number,
-      default: null, // Root tags will have null as parent
-      index: true, // Index for efficient parent-child relationship queries
-      min: [100, 'Parent ID must be a non-negative integer'], // Ensure non-negative integers for parentId
-      max: [999, 'Parent ID must be a non-negative integer'],
+      default: null,
+      //   required: [true, 'Image URL is required'],
+      //   match: [
+      //     /^https?:\/\/.+\.(jpg|jpeg|png|gif)$/i,
+      //     'Invalid image URL format',
+      //   ],
     },
     isDefaultParent: {
       type: Boolean,
-      default: false, // Flag to identify default parent tags
+      required: true,
+      default: false,
     },
-
-    // Tag Status Fields
-    isActive: {
-      type: Boolean,
-      default: true, // Tag is active by default
-      index: true, // Index for fast lookups of active/inactive tags
+    relativeHandle: {
+      type: [String], // This makes `relativeHandle` an array of strings
+      default: [],
+      // validate: {
+      //   validator: function (v) {
+      //     // Optional: You can add custom validation for each relative handle
+      //     return v.every((handle) => handle.length >= 3 && handle.length <= 50);
+      //   },
+      //   message: 'Each relative handle must be between 3 and 50 characters.',
+      // },
     },
-    isDeleted: {
-      type: Boolean,
-      default: false, // 0 = not deleted, 1 = soft deleted
-      index: true, // Index to optimize queries that exclude deleted tags
-    },
-    lastUpdated: {
-      type: Date,
-      default: Date.now, // Automatically set to current date/time on update
-    },
-
-    // Tag Analytics
-    viewCount: {
-      type: Number,
-      default: 0, // Track how many times the tag has been viewed
-      min: [0, 'View count cannot be negative'], // View count cannot be negative
-    },
-    productCount: {
-      type: Number,
-      default: 0, // Track how many products are associated with this tag
-      min: [0, 'Product count cannot be negative'], // Product count cannot be negative
-    },
-
-    // Created Date (For analytics, reporting, etc.)
-    createdAt: {
-      type: Date,
-      default: Date.now, // Set the createdAt timestamp to current time by default
-      index: true, // Optional index to optimize queries by creation time
+    description: {
+      type: String,
+      maxlength: [500, 'Description cannot exceed 500 characters'],
+      default: null,
     },
   },
   {
-    timestamps: { createdAt: 'createdAt', updatedAt: 'updatedAt' }, // Custom timestamp field names
+    timestamps: true, // adds createdAt and updatedAt fields
   }
 );
 
-module.exports = mongoose.model('Tag', tagSchema);
-
-// Optional: Add compound index for faster querying by handle and id
-tagSchema.index({ handle: 1, id: 1 });
-
-// Pre-save hook to update the 'lastUpdated' field before saving a tag
-tagSchema.pre('save', function (next) {
-  if (this.isModified()) {
-    this.lastUpdated = Date.now(); // Ensure lastUpdated is updated if the document is modified
-  }
-  next();
-});
-
-// Custom toJSON method to clean up the output
-tagSchema.set('toJSON', {
-  virtuals: true, // Include virtuals like the custom 'id' field
-  versionKey: false, // Omit the internal __v field from the output
-  transform: (doc, ret) => {
-    if (doc == -1) return;
-    ret.id = ret._id; // Rename _id to id for a cleaner API response
-    delete ret._id; // Remove the original _id field from the response
-  },
-});
-
-// Create and export the Tag model
+// Create the model
 const Tag = mongoose.model('Tag', tagSchema);
 
 module.exports = Tag;

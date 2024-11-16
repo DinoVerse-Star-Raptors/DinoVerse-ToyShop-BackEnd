@@ -9,6 +9,9 @@ dotenv.config();
 
 const app = express();
 
+// Middleware to parse JSON requests
+app.use(express.json());
+
 // Middleware
 app.use(cors());
 app.use(helmet());
@@ -23,11 +26,11 @@ app.get('/', (req, res) => {
 
 // Basic health check endpoint
 app.get('/api/health', (req, res) => {
+  if (req) console.log('ok');
   res.status(200).json({
     status: 'ok',
     timestamp: new Date().toISOString(),
   });
-  if (req) console.log('ok');
 });
 
 // Example protected route
@@ -38,6 +41,7 @@ app.get('/api/protected', authenticateRequest, (req, res) => {
 
 // Example API endpoints
 app.get('/api', (req, res) => {
+  if (req) console.log('Welcome to the API');
   res.json({ message: 'Welcome to the API' });
 });
 
@@ -119,33 +123,3 @@ if (process.env.NODE_ENV !== 'production') {
 module.exports = app;
 
 // https://typicode.github.io/husky/get-started.html
-// const express = require('express');
-// const cors = require('cors');
-
-// const app = express();
-
-// // Middleware to parse JSON requests
-// app.use(express.json());
-
-// // Middleware to handle CORS (Cross-Origin Resource Sharing)
-// app.use(
-//   cors({
-//     origin: '*', // Allow all origins (use cautiously in production)
-//   })
-// );
-
-// // Middleware to handle GET requests to the root endpoint
-// app.get('/', (req, res) => {
-//   res.send('Express on Vercel');
-// });
-
-// // Use the PORT from environment variables or default to 3000
-// const PORT = process.env.PORT || 3000;
-// app.listen(PORT, () => {
-//   console.log(`Server ready on port ${PORT}.`);
-// });
-
-// // Export the Express app as a serverless function for Vercel
-// module.exports = (req, res) => {
-//   app(req, res); // Vercel invokes this handler for each request
-// };

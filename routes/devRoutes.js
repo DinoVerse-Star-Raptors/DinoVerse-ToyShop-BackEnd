@@ -5,6 +5,6 @@ const router = express.Router();
 const { getActiveDevTags } = require('../controllers/devController'); // Adjust the path as needed
 
 // Define the route for fetching active tags with parentTagNumber 107
-router.get('/api/v1/dev-tags', getActiveDevTags);
+router.get('/api/dev-tags', getActiveDevTags);
 
 module.exports = router;

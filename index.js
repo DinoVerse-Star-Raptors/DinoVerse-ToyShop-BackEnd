@@ -1,13 +1,23 @@
 // /api/index.js
 const express = require('express');
+const mongoose = require('mongoose');
 const cors = require('cors');
 const helmet = require('helmet');
 const dotenv = require('dotenv');
+const ageRoutes = require('./routes/ageRoutes'); // Import the routes
+const devRoutes = require('./routes/devRoutes'); // Import the routes
 
 // Load environment variables
 dotenv.config();
 
 const app = express();
+
+// Database connection
+const dbURI = process.env.MONGODB_URI || 'mongodb://localhost:27017/ecommerce'; // Fallback to local MongoDB
+mongoose
+  .connect(dbURI)
+  .then(() => console.log('Connected to MongoDB'))
+  .catch((err) => console.error('Failed to connect to MongoDB:', err));
 
 // Middleware to parse JSON requests
 app.use(express.json());
@@ -44,6 +54,10 @@ app.get('/api', (req, res) => {
   if (req) console.log('Welcome to the API');
   res.json({ message: 'Welcome to the API' });
 });
+
+// Use the routes 2024-11-16
+app.use(ageRoutes); // Add the routes to the app
+app.use(devRoutes);
 
 app.post('/api/data', async (req, res) => {
   try {

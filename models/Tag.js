@@ -38,7 +38,7 @@ const tagSchema = new Schema(
     },
     imageUrl: {
       type: String,
-      default: null,
+      default: '',
       //   required: [true, 'Image URL is required'],
       //   match: [
       //     /^https?:\/\/.+\.(jpg|jpeg|png|gif)$/i,

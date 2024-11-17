@@ -5,7 +5,8 @@ const cors = require('cors');
 const helmet = require('helmet');
 const dotenv = require('dotenv');
 const ageRoutes = require('./routes/ageRoutes'); // Import the routes
-const devRoutes = require('./routes/devRoutes'); // Import the routes
+const devRoutes = require('./routes/devRoutes');
+const productRoutes = require('./routes/getProducts');
 
 // Load environment variables
 dotenv.config();
@@ -58,6 +59,7 @@ app.get('/api', (req, res) => {
 // Use the routes 2024-11-16
 app.use(ageRoutes); // Add the routes to the app
 app.use(devRoutes);
+app.use(productRoutes);
 
 app.post('/api/data', async (req, res) => {
   try {

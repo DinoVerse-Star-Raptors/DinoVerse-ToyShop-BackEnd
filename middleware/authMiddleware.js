@@ -1,5 +1,6 @@
-const jwt = require('jsonwebtoken');
-const User = require('../models/User'); // Assuming you have a User model
+import jwt from 'jsonwebtoken';
+import User from '../models/User'; // Assuming you have a User model
+import process from 'process';
 
 /**
  * Middleware to check if the user is authenticated (JWT token validation)
@@ -45,4 +46,4 @@ const isAdmin = (req, res, next) => {
   }
 };
 
-module.exports = { protect, isAdmin };
+export { protect, isAdmin };

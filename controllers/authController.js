@@ -1,6 +1,7 @@
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const User = require('../models/User'); // Assuming you have a User model
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import User from '../models/User'; // Assuming you have a User model
+import process from 'process';
 
 // Register a new user
 const register = async (req, res) => {
@@ -97,9 +98,4 @@ const logout = (req, res) => {
   res.status(200).json({ message: 'Logout successful' });
 };
 
-module.exports = {
-  register,
-  login,
-  getProfile,
-  logout
-};
+export { register, login, getProfile, logout };

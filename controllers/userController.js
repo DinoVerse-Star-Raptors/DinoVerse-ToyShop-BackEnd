@@ -1,10 +1,11 @@
-const bcrypt = require('bcryptjs'); // For hashing passwords
-const jwt = require('jsonwebtoken'); // For creating JSON Web Tokens
-const User = require('../models/User'); // Assuming you have a User model
-const Address = require('../models/Address');
-const Order = require('../models/Order');
-const Product = require('../models/Product');
-const Review = require('../models/Review');
+import bcrypt from 'bcryptjs'; // For hashing passwords
+import jwt from 'jsonwebtoken'; // For creating JSON Web Tokens
+import User from '../models/User'; // Assuming you have a User model
+import Address from '../models/Address';
+import Order from '../models/Order';
+import Product from '../models/Product';
+import Review from '../models/Review';
+import process from 'process';
 
 /**
  * Add a new address for the user
@@ -273,7 +274,7 @@ const deleteUserAccount = async (req, res) => {
   }
 };
 
-module.exports = {
+export {
   registerUser,
   loginUser,
   getUserProfile,
@@ -283,27 +284,3 @@ module.exports = {
   getOrderHistory,
   addProductReview
 };
-
-// const User = require("../models/User");
-
-// // Controller function to add a new user
-// const createUser = async (req, res) => {
-//   try {
-//	 const { username, email, password } = req.body;
-
-//	 const user = new User({
-//	   username,
-//	   email,
-//	   password, // You should hash the password before saving it in production!
-//	 });
-
-//	 await user.save(); // Save the user to MongoDB
-
-//	 res.status(201).json({ message: "User created successfully", user });
-//   } catch (err) {
-//	 console.error(err);
-//	 res.status(500).json({ message: "Server error" });
-//   }
-// };
-
-// module.exports = { createUser };

@@ -1,7 +1,7 @@
-const Address = require('../models/Address');
-const Order = require('../models/Order');
-const Product = require('../models/Product');
-const Review = require('../models/Review');
+import Address from '../models/Address';
+import Order from '../models/Order';
+import Product from '../models/Product';
+import Review from '../models/Review';
 
 /**
  * Add a new address for the user
@@ -97,8 +97,4 @@ const addProductReview = async (req, res) => {
   }
 };
 
-module.exports = {
-  addAddress,
-  getOrderHistory,
-  addProductReview
-};
+export { addAddress, getOrderHistory, addProductReview };

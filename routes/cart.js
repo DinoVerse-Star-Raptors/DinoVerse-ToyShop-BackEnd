@@ -1,13 +1,14 @@
-const express = require('express');
-const router = express.Router();
-const {
+import express from 'express';
+import {
   addItemToCart,
   getCart,
   updateCartItem,
   removeItemFromCart,
   clearCart
-} = require('../controllers/cartController');
-const protect = require('../middleware/auth'); // Protect routes
+} from '../controllers/cartController';
+import protect from '../middleware/auth'; // Protect routes
+
+const router = express.Router();
 
 // Protected routes (authentication required)
 router.post('/add', protect, addItemToCart); // Add item to cart
@@ -16,4 +17,4 @@ router.put('/update', protect, updateCartItem); // Update cart item
 router.delete('/remove', protect, removeItemFromCart); // Remove item from cart
 router.delete('/clear', protect, clearCart); // Clear the cart
 
-module.exports = router;
+export default router;

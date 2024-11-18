@@ -1,7 +1,10 @@
-const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
+import mongoose from 'mongoose';
+import bcrypt from 'bcryptjs';
 
-const AdminSchema = new mongoose.Schema(
+const { Schema } = mongoose;
+
+// Define the Admin schema
+const AdminSchema = new Schema(
   {
     username: {
       type: String,
@@ -61,8 +64,6 @@ const AdminSchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model('Admin', AdminSchema);
-
 // Pre-save hook to hash the password before saving the Admin model
 AdminSchema.pre('save', async function (next) {
   if (!this.isModified('password')) {
@@ -83,21 +84,5 @@ AdminSchema.methods.matchPassword = async function (enteredPassword) {
 // Create Admin model
 const Admin = mongoose.model('Admin', AdminSchema);
 
-module.exports = Admin;
-
-// const mongoose = require('mongoose');
-
-// const adminSchema = new mongoose.Schema({
-//   username: { type: String, required: true },
-//   email: { type: String, required: true },
-//   password: { type: String, required: true },
-//   role: { type: String, enum: ['admin'], default: 'admin' }, // ระบุว่าเป็นผู้ดูแลระบบเท่านั้น
-//   permissions: [
-//	 {
-//	   type: String,
-//	   enum: ['manage_users', 'manage_products', 'manage_orders'],
-//	 },
-//   ], // การกำหนดสิทธิพิเศษ
-// });
-
-// module.exports = mongoose.model('Admin', adminSchema);
+// Export the Admin model using ES Module syntax
+export default Admin;

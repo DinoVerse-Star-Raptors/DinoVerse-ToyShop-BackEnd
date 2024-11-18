@@ -1,13 +1,14 @@
-const express = require('express');
-const router = express.Router();
-const {
+import express from 'express';
+import {
   createProduct,
   getAllProducts,
   getProductById,
   updateProduct,
   deleteProduct
-} = require('../controllers/productController');
-const protect = require('../middleware/auth'); // Protect routes (optional)
+} from '../controllers/productController';
+import protect from '../middleware/auth'; // Protect routes (optional)
+
+const router = express.Router();
 
 // Public routes
 router.post('/', protect, createProduct); // Create a new product (protected)
@@ -16,4 +17,4 @@ router.get('/:id', getProductById); // Get product by ID
 router.put('/:id', protect, updateProduct); // Update product (protected)
 router.delete('/:id', protect, deleteProduct); // Delete product (protected)
 
-module.exports = router;
+export default router;

@@ -1,7 +1,7 @@
-// routes/tag.js
-const express = require('express');
+import express from 'express';
+import Tag from '../models/Tag'; // Import the Tag model
+
 const router = express.Router();
-const Tag = require('../models/Tag'); // Import the Tag model
 
 // POST endpoint to create a new tag
 router.post('/tags', async (req, res) => {
@@ -58,4 +58,4 @@ router.post('/tags', async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

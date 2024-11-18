@@ -1,5 +1,9 @@
-const mongoose = require('mongoose');
-require('dotenv').config(); // Import dotenv to use environment variables
+import mongoose from 'mongoose';
+import dotenv from 'dotenv'; // Import dotenv to use environment variables
+import process from 'process';
+
+// Load environment variables from .env file
+dotenv.config();
 
 // Function to connect to MongoDB using Mongoose
 const connectDB = async () => {
@@ -23,14 +27,5 @@ const connectDB = async () => {
   }
 };
 
-// Export the connection function so it can be used in server.js
-module.exports = connectDB;
-
-// // Access MongoDB URI
-// const mongoUri = process.env.MONGODB_URI;
-
-// // Access JWT secret
-// const jwtSecret = process.env.JWT_SECRET;
-
-// // Example usage
-// mongoose.connect(mongoUri, { useNewUrlParser: true, useUnifiedTopology: true });
+// Export the connection function as default
+export default connectDB;

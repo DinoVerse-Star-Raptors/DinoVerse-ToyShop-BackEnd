@@ -55,7 +55,7 @@ const tagSchema = new Schema(
     }
   },
   {
-    timestamps: true // adds createdAt and updatedAt fields
+    timestamps: true // adds createdAt and updatedAt fields automatically
   }
 );
 

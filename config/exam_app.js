@@ -1,9 +1,11 @@
-const express = require('express');
+import express from 'express';
+import bodyParser from 'body-parser';
+import cors from 'cors';
+import morgan from 'morgan';
+// import config from './config/config'; // Uncomment this if you have a config module
+
+// Create an Express app
 const app = express();
-const bodyParser = require('body-parser');
-const cors = require('cors');
-const morgan = require('morgan');
-// const config = require('./config/config');
 
 // Middlewares
 app.use(bodyParser.json());
@@ -11,8 +13,8 @@ app.use(cors());
 app.use(morgan('dev'));
 
 // Routes
-const v1Routes = require('./src/api/v1/index');
-const v2Routes = require('./src/api/v2/index');
+import v1Routes from './src/api/v1/index.js';
+import v2Routes from './src/api/v2/index.js';
 
 app.use('/api/v1', v1Routes);
 app.use('/api/v2', v2Routes);
@@ -24,4 +26,5 @@ app.use((err, req, res, next) => {
   res.status(500).send('Something went wrong!');
 });
 
-module.exports = app;
+// Export the app
+export default app;

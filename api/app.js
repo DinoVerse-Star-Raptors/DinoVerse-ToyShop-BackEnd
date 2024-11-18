@@ -1,14 +1,6 @@
-// const express = require('express');
-// const app = express();
-
-// app.get('/', (req, res) => res.send('Express on Vercel'));
-
-// app.listen(3000, () => console.log('Server ready on port 3000.'));
-
-// module.exports = app;
-
-const express = require('express');
-const cors = require('cors');
+import express from 'express';
+import cors from 'cors';
+import process from 'process';
 
 const app = express();
 
@@ -33,10 +25,7 @@ app.listen(PORT, () => {
   console.log(`Server ready on port ${PORT}.`);
 });
 
-// Export the Express app for use with serverless functions
-// module.exports = app;
-
 // Export the Express app as a serverless function for Vercel
-module.exports = (req, res) => {
+export default (req, res) => {
   app(req, res); // Vercel invokes this handler for each request
 };

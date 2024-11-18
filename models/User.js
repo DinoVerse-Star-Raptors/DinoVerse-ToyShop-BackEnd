@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 // Define the User Schema
 const userSchema = new mongoose.Schema(
@@ -25,32 +25,32 @@ const userSchema = new mongoose.Schema(
 // Create a User model based on the schema
 const User = mongoose.model('User', userSchema);
 
-module.exports = User;
+export default User;
 
 // If you're using Cloudinary
-// const mongoose = require('mongoose');
+// import mongoose from 'mongoose';
 
 // // Define the User Schema
 // const userSchema = new mongoose.Schema(
 //   {
-//	 username: {
-//	   type: String,
-//	   required: true,
-//	   unique: true,
-//	 },
-//	 email: {
-//	   type: String,
-//	   required: true,
-//	   unique: true,
-//	 },
-//	 password: {
-//	   type: String,
-//	   required: true,
-//	 },
-//	 image: {
-//	   type: String, // Store image URL or path (e.g., Cloudinary or local path)
-//	   required: false, // Image is optional during registration
-//	 },
+//     username: {
+//       type: String,
+//       required: true,
+//       unique: true,
+//     },
+//     email: {
+//       type: String,
+//       required: true,
+//       unique: true,
+//     },
+//     password: {
+//       type: String,
+//       required: true,
+//     },
+//     image: {
+//       type: String, // Store image URL or path (e.g., Cloudinary or local path)
+//       required: false, // Image is optional during registration
+//     },
 //   },
 //   { timestamps: true }
 // );
@@ -58,4 +58,4 @@ module.exports = User;
 // // Create a User model based on the schema
 // const User = mongoose.model('User', userSchema);
 
-// module.exports = User;
+// export default User;

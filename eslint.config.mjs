@@ -14,10 +14,23 @@ export default [
   pluginJs.configs.recommended,
   {
     rules: {
-      'no-unused-vars': 'warn', // Warn about unused variables
-      'no-undef': 'warn' // Warn about undefined variables
+      'no-unused-vars': 'warn',
+      'no-undef': 'warn',
+      indent: ['error', 2],
+      semi: ['error', 'always']
+    },
+    languageOptions: {
+      ecmaVersion: 'latest',
+      sourceType: 'module'
     }
   }
+  //   pluginJs.configs.recommended,
+  //   {
+  //     rules: {
+  //       'no-unused-vars': 'warn', // Warn about unused variables
+  //       'no-undef': 'warn' // Warn about undefined variables
+  //     }
+  //   }
 ];
 
 // import globals from "globals";

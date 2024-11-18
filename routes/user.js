@@ -1,7 +1,6 @@
-const express = require('express');
-const router = express.Router();
-const { protect } = require('../middleware/auth'); // Protect routes
-const {
+import express from 'express';
+import { protect } from '../middleware/auth'; // Protect routes
+import {
   registerUser,
   loginUser,
   getUserProfile,
@@ -10,7 +9,9 @@ const {
   addAddress,
   getOrderHistory,
   addProductReview
-} = require('../controllers/userController');
+} from '../controllers/userController';
+
+const router = express.Router();
 
 // Register user
 router.post('/register', registerUser);
@@ -36,4 +37,4 @@ router.get('/orders', protect, getOrderHistory);
 // Add a product review (requires authentication)
 router.post('/reviews', protect, addProductReview);
 
-module.exports = router;
+export default router;

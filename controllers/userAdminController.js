@@ -1,7 +1,7 @@
-const User = require('../models/User');
-const Product = require('../models/Product');
-const Order = require('../models/Order');
-const Category = require('../models/Category');
+import User from '../models/User';
+import Product from '../models/Product';
+import Order from '../models/Order';
+import Category from '../models/Category';
 
 // Helper function to handle errors
 const handleError = (error, res, message) => {
@@ -352,7 +352,7 @@ const updateOrderStatus = async (req, res) => {
   }
 };
 
-module.exports = {
+export {
   getAllUsers,
   getUserById,
   updateUser,

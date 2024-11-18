@@ -1,4 +1,4 @@
-const Product = require('../models/Product'); // Assuming you have a Product model
+import Product from '../models/Product'; // Assuming you have a Product model
 
 // Create a new product
 const createProduct = async (req, res) => {
@@ -118,7 +118,7 @@ const deleteProduct = async (req, res) => {
   }
 };
 
-module.exports = {
+export {
   createProduct,
   getAllProducts,
   getProductById,

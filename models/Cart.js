@@ -1,6 +1,9 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
-const cartItemSchema = mongoose.Schema({
+const { Schema } = mongoose;
+
+// Define the CartItem schema
+const cartItemSchema = new Schema({
   product: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Product', // Reference to the Product model
@@ -13,7 +16,8 @@ const cartItemSchema = mongoose.Schema({
   }
 });
 
-const cartSchema = mongoose.Schema(
+// Define the Cart schema
+const cartSchema = new Schema(
   {
     user: {
       type: mongoose.Schema.Types.ObjectId,
@@ -22,9 +26,11 @@ const cartSchema = mongoose.Schema(
     },
     items: [cartItemSchema]
   },
-  { timestamps: true }
+  { timestamps: true } // Automatically adds createdAt and updatedAt fields
 );
 
+// Create the Cart model from the schema
 const Cart = mongoose.model('Cart', cartSchema);
 
-module.exports = Cart;
+// Export the Cart model using ES Modules syntax
+export default Cart;

@@ -1,3 +1,4 @@
+import process from 'process';
 /**
  * Error handling middleware
  * This middleware will catch all errors and send a structured response.
@@ -35,4 +36,4 @@ const errorMiddleware = (err, req, res, next) => {
   });
 };
 
-module.exports = errorMiddleware;
+export default errorMiddleware;

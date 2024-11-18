@@ -1,5 +1,5 @@
-const Cart = require('../models/Cart'); // Assuming a Cart model
-const Product = require('../models/Product'); // Assuming a Product model
+import Cart from '../models/Cart'; // Assuming a Cart model
+import Product from '../models/Product'; // Assuming a Product model
 
 // Add item to the cart
 const addItemToCart = async (req, res) => {
@@ -159,7 +159,7 @@ const clearCart = async (req, res) => {
   }
 };
 
-module.exports = {
+export {
   addItemToCart,
   getCart,
   updateCartItem,

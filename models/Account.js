@@ -1,7 +1,7 @@
-const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs'); // For hashing passwords
-const validator = require('validator'); // For input validation
-const { nanoid } = require('nanoid'); // For generating unique user IDs
+import mongoose from 'mongoose';
+import bcrypt from 'bcryptjs'; // For hashing passwords
+import validator from 'validator'; // For input validation
+import { nanoid } from 'nanoid'; // For generating unique user IDs
 
 // Address schema
 const addressSchema = new mongoose.Schema(
@@ -38,7 +38,7 @@ const addressSchema = new mongoose.Schema(
       type: String,
       required: [true, 'Recipient phone number is required'],
       validate: {
-        validator: (value) => /^(0[1-9]{1})\d{8}$/.test(value), // Thai phone number format (starts with 0 and 9 digits)
+        validator: (value) => /^(0[1-9]{1})\d{8}$/.test(value), // Thai phone number format
         message: 'Please provide a valid Thai phone number'
       }
     },
@@ -48,7 +48,7 @@ const addressSchema = new mongoose.Schema(
     }
   },
   {
-    _id: false, // Prevents the creation of an _id for each address (since we don't need it)
+    _id: false, // Prevents the creation of an _id for each address
     timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' } // Add timestamps to track creation and updates
   }
 );
@@ -63,7 +63,7 @@ const userSchema = new mongoose.Schema(
       default: () => nanoid(10) // Generates a unique 10-character ID for each user
     },
     googleId: {
-      type: String, // Store the unique Google user ID (sub field in Google OAuth response)
+      type: String, // Store the unique Google user ID
       unique: true,
       sparse: true // Allows googleId to be null for users who don't sign in via Google
     },
@@ -174,4 +174,4 @@ userSchema.methods.matchPassword = async function (enteredPassword) {
 // Create and export User model
 const User = mongoose.model('User', userSchema);
 
-module.exports = User;
+export default User;

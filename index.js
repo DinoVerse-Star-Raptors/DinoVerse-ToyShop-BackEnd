@@ -4,6 +4,7 @@ import mongoose from 'mongoose'
 import cors from 'cors'
 import helmet from 'helmet'
 import dotenv from 'dotenv'
+import process from 'process'
 import ageRoutes from './routes/ageRoutes.js' // Import the routes (add .js extension)
 import devRoutes from './routes/devRoutes.js'
 import productRoutes from './routes/getProducts.js'

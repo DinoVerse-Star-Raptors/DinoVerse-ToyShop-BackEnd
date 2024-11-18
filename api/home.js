@@ -18,8 +18,8 @@
 // // Basic health check endpoint
 // app.get('/api/health', (req, res) => {
 //   res.status(200).json({
-//     status: 'ok',
-//     timestamp: new Date().toISOString(),
+//	 status: 'ok',
+//	 timestamp: new Date().toISOString(),
 //   });
 // });
 
@@ -35,19 +35,19 @@
 
 // app.post('/api/data', async (req, res) => {
 //   try {
-//     const { data } = req.body;
-//     // Process the data here
-//     res.status(201).json({
-//       success: true,
-//       message: 'Data received successfully',
-//       data,
-//     });
+//	 const { data } = req.body;
+//	 // Process the data here
+//	 res.status(201).json({
+//	   success: true,
+//	   message: 'Data received successfully',
+//	   data,
+//	 });
 //   } catch (error) {
-//     res.status(500).json({
-//       success: false,
-//       message: 'Error processing request',
-//       error: error.message,
-//     });
+//	 res.status(500).json({
+//	   success: false,
+//	   message: 'Error processing request',
+//	   error: error.message,
+//	 });
 //   }
 // });
 
@@ -55,20 +55,20 @@
 // app.use((err, req, res, next) => {
 //   console.error(err.stack);
 //   res.status(500).json({
-//     success: false,
-//     message: 'Something went wrong!',
-//     error:
-//       process.env.NODE_ENV === 'development'
-//         ? err.message
-//         : 'Internal server error',
+//	 success: false,
+//	 message: 'Something went wrong!',
+//	 error:
+//	   process.env.NODE_ENV === 'development'
+//		 ? err.message
+//		 : 'Internal server error',
 //   });
 // });
 
 // // 404 handler
 // app.use((req, res) => {
 //   res.status(404).json({
-//     success: false,
-//     message: 'Route not found',
+//	 success: false,
+//	 message: 'Route not found',
 //   });
 // });
 
@@ -77,20 +77,20 @@
 //   const authHeader = req.headers.authorization;
 
 //   if (!authHeader) {
-//     return res.status(401).json({
-//       success: false,
-//       message: 'Authorization header is required',
-//     });
+//	 return res.status(401).json({
+//	   success: false,
+//	   message: 'Authorization header is required',
+//	 });
 //   }
 
 //   // Implement your authentication logic here
 //   // Example: Bearer token validation
 //   const token = authHeader.split(' ')[1];
 //   if (!token) {
-//     return res.status(401).json({
-//       success: false,
-//       message: 'Invalid token format',
-//     });
+//	 return res.status(401).json({
+//	   success: false,
+//	   message: 'Invalid token format',
+//	 });
 //   }
 
 //   // Verify token here
@@ -102,7 +102,7 @@
 // if (process.env.NODE_ENV !== 'production') {
 //   const PORT = process.env.PORT || 3000;
 //   app.listen(PORT, () => {
-//     console.log(`Server is running on port ${PORT}`);
+//	 console.log(`Server is running on port ${PORT}`);
 //   });
 // }
 

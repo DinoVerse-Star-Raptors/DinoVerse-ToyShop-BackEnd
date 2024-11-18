@@ -1,8 +1,8 @@
-const express = require('express')
-const app = express()
-require('dotenv').config() // Load environment variables from .env file
+const express = require('express');
+const app = express();
+require('dotenv').config(); // Load environment variables from .env file
 // // const bodyParser = require('body-parser');
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 // const productRoutes = require('./routes/products');
 // const userRoutes = require('./routes/user'); // Import user routes
 // const authRoutes = require('./routes/auth'); // Import auth routes
@@ -12,22 +12,22 @@ const mongoose = require('mongoose')
 // const errorMiddleware = require('./middleware/errorMiddleware'); // Import error handling middleware
 
 // Middleware to parse JSON
-app.use(express.json())
+app.use(express.json());
 // // Body parser middleware to parse JSON data
 // app.use(bodyParser.json());
 
 // Database connection
-const dbURI = process.env.MONGODB_URI || 'mongodb://localhost:27017/ecommerce' // Fallback to local MongoDB
+const dbURI = process.env.MONGODB_URI || 'mongodb://localhost:27017/ecommerce'; // Fallback to local MongoDB
 mongoose
-    .connect(dbURI)
-    .then(() => console.log('Connected to MongoDB'))
-    .catch((err) => console.error('Failed to connect to MongoDB:', err))
+  .connect(dbURI)
+  .then(() => console.log('Connected to MongoDB'))
+  .catch((err) => console.error('Failed to connect to MongoDB:', err));
 
 const myCallback = (req, res) => {
-    res.send('This is my callback function')
-}
+  res.send('This is my callback function');
+};
 
-app.get('/', myCallback)
+app.get('/', myCallback);
 
 // Example route
 // app.get('/', (req, res) => {
@@ -45,11 +45,11 @@ app.get('/', myCallback)
 // const isAdmin = (req, res, next) => {
 //   // Simple check for admin token or role, for illustration purposes
 //   if (req.headers['x-admin-token'] === process.env.ADMIN_TOKEN) {
-//     return next();
+//	 return next();
 //   }
 //   res
-//     .status(403)
-//     .json({ success: false, message: 'Forbidden: Admin access required' });
+//	 .status(403)
+//	 .json({ success: false, message: 'Forbidden: Admin access required' });
 // };
 
 // // Use admin authentication middleware globally for all admin routes
@@ -62,18 +62,18 @@ app.get('/', myCallback)
 // app.use(errorMiddleware);
 
 // Start the server
-const PORT = process.env.PORT || 5000
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`)
-})
+  console.log(`Server is running on port ${PORT}`);
+});
 
 // const PORT = process.env.PORT || 5000;
 // mongoose
 //   .connect(process.env.MONGODB_URI, {
-//     useNewUrlParser: true,
-//     useUnifiedTopology: true,
+//	 useNewUrlParser: true,
+//	 useUnifiedTopology: true,
 //   })
 //   .then(() =>
-//     app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
+//	 app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
 //   )
 //   .catch((err) => console.error('MongoDB connection error: ', err));

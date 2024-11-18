@@ -1,4 +1,4 @@
-import globals from 'globals';
+// import globals from 'globals';
 import pluginJs from '@eslint/js';
 
 /** @type {import('eslint').Linter.Config[]} */
@@ -6,7 +6,6 @@ export default [
   {
     files: ['**/*.js'],
     languageOptions: {
-      globals: globals.browser,
       ecmaVersion: 'latest', // Use the latest ECMAScript version
       sourceType: 'module', // Set source type to 'module' for ES modules
     },
@@ -19,12 +18,3 @@ export default [
     },
   },
 ];
-
-// import globals from "globals";
-// import pluginJs from "@eslint/js";
-
-// /** @type {import('eslint').Linter.Config[]} */
-// export default [
-//   {languageOptions: { globals: globals.browser }},
-//   pluginJs.configs.recommended,
-// ];

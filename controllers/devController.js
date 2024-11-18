@@ -1,4 +1,5 @@
-const Tag = require('../models/Tag'); // Import the Tag model
+// Import the Tag model using ES Module syntax
+import Tag from '../models/Tag.js'; // Make sure to add the .js extension
 
 // Controller function to get tags where isActive is true and parentTagNumber is 107
 const getActiveDevTags = async (req, res) => {
@@ -6,7 +7,7 @@ const getActiveDevTags = async (req, res) => {
     // Filter the tags by isActive: true and parentTagNumber: 107
     const tags = await Tag.find({ isActive: true, parentTagNumber: 107 });
 
-    // If no tags are found, send a 404 response
+    // If no tags are found, send a 404 response with a message
     if (tags.length === 0) {
       return res.status(404).json({
         message: 'No active tags found for the specified parentTagNumber',
@@ -24,4 +25,5 @@ const getActiveDevTags = async (req, res) => {
   }
 };
 
-module.exports = { getActiveDevTags };
+// Export the controller function using ES Module syntax
+export { getActiveDevTags };

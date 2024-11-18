@@ -1,9 +1,12 @@
-const express = require('express');
+// Import express and the router in ES Module syntax
+import express from 'express';
 const router = express.Router();
-const {
+
+// Import the controller functions using ES Module syntax (add .js extension)
+import {
   getAllProducts,
   getProductById,
-} = require('../controllers/getProductController');
+} from '../controllers/getProductController.js'; // Add .js extension
 
 // Route to get all products
 router.get('/api/products', getAllProducts);
@@ -11,4 +14,5 @@ router.get('/api/products', getAllProducts);
 // Route to get a specific product by productId
 router.get('/api/products/:productId', getProductById);
 
-module.exports = router;
+// Export the router using ES Module syntax
+export default router;

@@ -1,6 +1,5 @@
-// models/Tag.js
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+import mongoose from 'mongoose';
+const { Schema } = mongoose;
 
 // Define the schema for the "Tag" model
 const tagSchema = new Schema(
@@ -39,11 +38,6 @@ const tagSchema = new Schema(
     imageUrl: {
       type: String,
       default: '',
-      //   required: [true, 'Image URL is required'],
-      //   match: [
-      //     /^https?:\/\/.+\.(jpg|jpeg|png|gif)$/i,
-      //     'Invalid image URL format',
-      //   ],
     },
     isDefaultParent: {
       type: Boolean,
@@ -53,13 +47,6 @@ const tagSchema = new Schema(
     relativeHandle: {
       type: [String], // This makes `relativeHandle` an array of strings
       default: [],
-      // validate: {
-      //   validator: function (v) {
-      //     // Optional: You can add custom validation for each relative handle
-      //     return v.every((handle) => handle.length >= 3 && handle.length <= 50);
-      //   },
-      //   message: 'Each relative handle must be between 3 and 50 characters.',
-      // },
     },
     description: {
       type: String,
@@ -75,4 +62,5 @@ const tagSchema = new Schema(
 // Create the model
 const Tag = mongoose.model('Tag', tagSchema);
 
-module.exports = Tag;
+// Export the model using ES Module syntax
+export default Tag;

@@ -1,112 +1,9 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
-// // Define the product schema
-// const productSchema = new mongoose.Schema(
-//   {
-//     productId: {
-//       type: String,
-//       required: true,
-//       unique: true,
-//       trim: true,
-//     },
-//     handle: {
-//       type: String,
-//       required: true,
-//       unique: true,
-//       trim: true,
-//     },
-//     name: {
-//       type: String,
-//       required: true,
-//       trim: true,
-//       maxlength: [100, 'Product name cannot be longer than 100 characters'],
-//     },
-//     stock: {
-//       type: Boolean,
-//       default: true, // Product is active (available for sale) by default
-//     },
-//     quantity: {
-//       type: Number,
-//       required: true,
-//       min: [0, 'Quantity cannot be negative'],
-//       default: 0, // The number of items available for purchase
-//     },
-//     ageGroup: {
-//       type: String,
-//       required: true,
-//       trim: true,
-//     },
-//     tags: {
-//       type: [String], // Array of strings to store tags like "office", "stationary"
-//       default: [],
-//     },
-//     recommended: {
-//       type: Boolean,
-//       default: false, // Default to not recommended
-//     },
-//     price: {
-//       type: Number,
-//       required: true,
-//       min: [0, 'Price must be a positive number'],
-//     },
-//     isActive: {
-//       type: Boolean,
-//       default: true, // Product is active (available for sale) by default
-//     },
-//     rating: {
-//       rate: {
-//         type: Number,
-//         default: 0, // Default rating is 0 if no reviews exist
-//         min: [0, 'Rating must be between 0 and 5'],
-//         max: [5, 'Rating must be between 0 and 5'],
-//       },
-//       count: {
-//         type: Number,
-//         default: 0, // Default count is 0 if no reviews exist
-//       },
-//       start1: { type: Number, default: 0 },
-//       start2: { type: Number, default: 0 },
-//       start3: { type: Number, default: 0 },
-//       start4: { type: Number, default: 0 },
-//       start5: { type: Number, default: 0 },
-//     },
-//     reviews: [
-//       {
-//         reviewer: {
-//           type: String,
-//           required: true,
-//         },
-//         rating: {
-//           type: Number,
-//           required: true,
-//           min: [0, 'Rating must be between 0 and 5'],
-//           max: [5, 'Rating must be between 0 and 5'],
-//         },
-//         comment: {
-//           type: String,
-//           required: true,
-//           maxlength: [
-//             500,
-//             'Review comment cannot be longer than 500 characters',
-//           ],
-//         },
-//         createdAt: {
-//           type: Date,
-//           default: Date.now,
-//         },
-//       },
-//     ],
-//     imageUrl: {
-//       type: String, // URL of the product image
-//       required: false, // Optional field
-//       trim: true, // Remove any extra spaces from the URL
-//     },
-//   },
-//   { timestamps: true } // Automatically add createdAt and updatedAt fields
-// );
+const { Schema } = mongoose;
 
 // Define the product schema
-const productSchema = new mongoose.Schema(
+const productSchema = new Schema(
   {
     productId: {
       type: String,
@@ -146,10 +43,6 @@ const productSchema = new mongoose.Schema(
       required: [true, 'Age group is required'],
       maxlength: [50, 'Age group cannot be longer than 50 characters'],
       minlength: [3, 'Age group must be at least 3 characters long'],
-      // enum: {
-      //   values: ['child', 'teen', 'adult'],
-      //   message: 'Age group must be one of: child, teen, adult',
-      // },
     },
     tags: {
       type: [String], // Array of strings to store tags like "office", "stationary"
@@ -276,38 +169,4 @@ productSchema.pre('save', function (next) {
 
 // Create and export the Product model
 const Product = mongoose.model('Product', productSchema);
-module.exports = Product;
-
-// const mongoose = require('mongoose');
-
-// const productSchema = mongoose.Schema(
-//   {
-//     name: {
-//       type: String,
-//       required: true,
-//       unique: true,
-//     },
-//     description: {
-//       type: String,
-//       required: true,
-//     },
-//     price: {
-//       type: Number,
-//       required: true,
-//     },
-//     imageUrl: {
-//       type: String,
-//       required: true,
-//     },
-//     stock: {
-//       type: Number,
-//       required: true,
-//       default: 0,
-//     },
-//   },
-//   { timestamps: true }
-// );
-
-// const Product = mongoose.model('Product', productSchema);
-
-// module.exports = Product;
+export default Product;

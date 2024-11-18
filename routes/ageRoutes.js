@@ -1,9 +1,9 @@
-// routes/ageRoutes.js
-const express = require('express');
-const { getActiveAgeTags } = require('../controllers/ageController'); // Import the controller
+// Import dependencies using ES Module syntax
+import express from 'express';
+import { getActiveAgeTags } from '../controllers/ageController.js'; // Import the controller (add .js extension)
 const router = express.Router();
 
 // Define the route with the /api/v1/ prefix
-router.get('/api/age-tags', getActiveAgeTags); // Add the /api/v1/ part here
+router.get('/api/age-tags', getActiveAgeTags); // Ensure the /api/v1/ prefix is added
 
-module.exports = router;
+export default router; // Export the router

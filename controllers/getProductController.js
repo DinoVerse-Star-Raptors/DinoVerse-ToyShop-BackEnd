@@ -1,4 +1,5 @@
-const Product = require('../models/Product'); // Import the Product model
+// Import the Product model using ES Module syntax
+import Product from '../models/Product.js'; // Add .js extension
 
 // Function to get all products
 const getAllProducts = async (req, res) => {
@@ -42,8 +43,5 @@ const getProductById = async (req, res) => {
   }
 };
 
-// Export the controller functions
-module.exports = {
-  getAllProducts,
-  getProductById,
-};
+// Export the controller functions using ES Module syntax
+export { getAllProducts, getProductById };

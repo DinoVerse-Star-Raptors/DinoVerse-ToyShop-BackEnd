@@ -1,12 +1,12 @@
-// /api/index.js
-const express = require('express');
-const mongoose = require('mongoose');
-const cors = require('cors');
-const helmet = require('helmet');
-const dotenv = require('dotenv');
-const ageRoutes = require('./routes/ageRoutes'); // Import the routes
-const devRoutes = require('./routes/devRoutes');
-const productRoutes = require('./routes/getProducts');
+// Import dependencies using ES Module syntax
+import express from 'express';
+import mongoose from 'mongoose';
+import cors from 'cors';
+import helmet from 'helmet';
+import dotenv from 'dotenv';
+import ageRoutes from './routes/ageRoutes.js'; // Import the routes (add .js extension)
+import devRoutes from './routes/devRoutes.js';
+import productRoutes from './routes/getProducts.js';
 
 // Load environment variables
 dotenv.config();
@@ -136,6 +136,4 @@ if (process.env.NODE_ENV !== 'production') {
   });
 }
 
-module.exports = app;
-
-// https://typicode.github.io/husky/get-started.html
+export default app;

@@ -1,4 +1,5 @@
-const Tag = require('../models/Tag'); // Import the Tag model
+// Import the Tag model using ES Module syntax
+import Tag from '../models/Tag.js'; // Ensure to add the .js extension
 
 // Controller function to get tags where isActive is true and parentTagNumber is 106
 const getActiveAgeTags = async (req, res) => {
@@ -22,4 +23,5 @@ const getActiveAgeTags = async (req, res) => {
   }
 };
 
-module.exports = { getActiveAgeTags };
+// Export the controller function using ES Module syntax
+export { getActiveAgeTags };

@@ -80,7 +80,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: [true, 'Password is required'],
       minlength: [8, 'Password should be at least 8 characters'],
-      select: false // Don't return the password by default when querying users
+      select: true // Don't return the password by default when querying users
     },
     fullname: {
       type: String,

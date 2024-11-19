@@ -8,6 +8,7 @@ import process from 'process';
 import ageRoutes from './routes/ageRoutes.js'; // Import the routes (add .js extension)
 import devRoutes from './routes/devRoutes.js';
 import productRoutes from './routes/getProducts.js';
+import adminRoutes from './routes/admin.js';
 
 // Load environment variables
 dotenv.config();
@@ -61,6 +62,7 @@ app.get('/api', (req, res) => {
 app.use(ageRoutes); // Add the routes to the app
 app.use(devRoutes);
 app.use(productRoutes);
+app.use(adminRoutes);
 
 app.post('/api/data', async (req, res) => {
   try {

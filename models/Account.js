@@ -62,11 +62,11 @@ const userSchema = new mongoose.Schema(
       unique: true, // Ensuring unique user ID
       default: () => nanoid(10) // Generates a unique 10-character ID for each user
     },
-    googleId: {
-      type: String, // Store the unique Google user ID
-      unique: true,
-      sparse: true // Allows googleId to be null for users who don't sign in via Google
-    },
+    // googleId: {
+    //   type: String, // Store the unique Google user ID
+    //   unique: true,
+    //   sparse: true // Allows googleId to be null for users who don't sign in via Google
+    // },
     username: {
       type: String,
       required: [true, 'Username is required'],
@@ -99,7 +99,8 @@ const userSchema = new mongoose.Schema(
     },
     gender: {
       type: String,
-      enum: ['male', 'female', 'other'] // Limit gender to three options
+      enum: ['male', 'female', 'other', 'prefer not to say'],
+      default: 'prefer not to say' // Default gender choice to be neutral and optional
     },
     dateOfBirth: {
       type: Date,
@@ -108,14 +109,14 @@ const userSchema = new mongoose.Schema(
         message: 'Date of birth cannot be in the future'
       }
     },
-    zipcode: {
-      type: String,
-      default: '',
-      validate: {
-        validator: (value) => /^[1-9][0-9]{4}$/.test(value),
-        message: 'Please provide a valid 5-digit postal code'
-      }
-    },
+    // zipcode: {
+    //   type: String,
+    //   default: '',
+    //   validate: {
+    //     validator: (value) => /^[1-9][0-9]{4}$/.test(value),
+    //     message: 'Please provide a valid 5-digit postal code'
+    //   }
+    // },
     phone: {
       type: String,
       validate: {
@@ -130,10 +131,10 @@ const userSchema = new mongoose.Schema(
         message: 'Please provide a valid URL for the profile picture'
       }
     },
-    isAdmin: {
-      type: Boolean,
-      default: false
-    },
+    // isAdmin: {
+    //   type: Boolean,
+    //   default: false
+    // },
     // Array to store multiple addresses
     addresses: {
       type: [addressSchema], // Using the address schema to store multiple addresses
@@ -147,6 +148,32 @@ const userSchema = new mongoose.Schema(
       type: String,
       enum: ['active', 'inactive', 'suspended'],
       default: 'active'
+    },
+    isDelete: {
+      type: Boolean,
+      default: false // Default value is false, meaning the user is not deleted
+    },
+    isAdmin: {
+      type: {
+        statusAdmin: {
+          type: Boolean,
+          default: false // Default value is false, not an admin
+        },
+        setAdminBy: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'User', // Reference to the user who set the admin role
+          required: function () {
+            return this.statusAdmin;
+          } // Ensure it's set only when isAdmin.status is true
+        },
+        setAdminDate: {
+          type: Date,
+          default: function () {
+            return this.statusAdmin ? new Date() : null;
+          } // Set the current date when isAdmin.status is true
+        }
+      },
+      default: {} // Default empty object
     }
   },
   {

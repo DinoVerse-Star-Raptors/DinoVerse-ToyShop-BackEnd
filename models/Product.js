@@ -28,6 +28,12 @@ const productSchema = new Schema(
       maxlength: [100, 'Product name cannot be longer than 100 characters'],
       minlength: [3, 'Product name must be at least 3 characters long']
     },
+    description: {
+      type: String,
+      required: false, // Optional field
+      maxlength: [500, 'Description cannot be longer than 500 characters'],
+      trim: true // Remove any extra spaces from the description
+    },
     stock: {
       type: Boolean,
       default: true // Product is active (available for sale) by default

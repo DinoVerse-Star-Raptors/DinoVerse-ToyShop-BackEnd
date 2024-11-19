@@ -44,6 +44,12 @@ const productSchema = new Schema(
       maxlength: [50, 'Age group cannot be longer than 50 characters'],
       minlength: [3, 'Age group must be at least 3 characters long']
     },
+    ageGroupTagHandle: {
+      type: String,
+      ref: 'Tag', // Reference to the Tag model
+      required: false, // Will populate based on the ageGroup
+      default: ''
+    },
     tags: {
       type: [String], // Array of strings to store tags like "office", "stationary"
       default: [],

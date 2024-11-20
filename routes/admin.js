@@ -22,7 +22,7 @@ import loginAdminController from '../controllers/loginAdminController.js'; // Im
 const router = express.Router();
 
 // POST /admin/login route for admin login
-router.post('/api/admin/login', loginAdminController);
+router.post('/login', loginAdminController);
 
 // // User routes
 // router.get('/api/users', protect, isAdmin, getAllUsers);

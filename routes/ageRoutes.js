@@ -4,6 +4,6 @@ import { getActiveAgeTags } from '../controllers/ageController.js'; // Import th
 const router = express.Router();
 
 // Define the route with the /api/v1/ prefix
-router.get('/api/age-tags', getActiveAgeTags); // Ensure the /api/v1/ prefix is added
+router.get('/', getActiveAgeTags); // Ensure the /api/v1/ prefix is added
 
 export default router; // Export the router

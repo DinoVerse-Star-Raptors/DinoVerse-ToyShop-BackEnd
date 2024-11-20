@@ -9,10 +9,10 @@ import {
 } from '../controllers/getProductController.js'; // Add .js extension
 
 // Route to get all products
-router.get('/api/products', getAllProducts);
+router.get('/', getAllProducts);
 
 // Route to get a specific product by productId
-router.get('/api/products/:productId', getProductById);
+router.get('/:productId', getProductById);
 
 // Export the router using ES Module syntax
 export default router;

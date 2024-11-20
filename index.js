@@ -54,49 +54,6 @@ app.get('/', (req, res) => {
   if (req) console.log('Welcome to Dino Think');
 });
 
-// app.get('/hello-world', (req, res) => {
-//   try {
-//     /* Start log */
-//     logger.info(
-//       {
-//         method: req.method,
-//         path: req.originalUrl,
-//         queryParams: req.query,
-//         username: 'Dino (from auth middleware)',
-//         timestamp: new Date().toISOString()
-//       },
-//       'Received request'
-//     );
-//     /* End log */
-
-//     const { query } = req;
-//     if (query.animal === 'cat') {
-//       throw { message: 'Cats are banned' };
-//     }
-
-//     /* Start log */
-//     logger.info(
-//       {
-//         username: 'Dino (from auth middleware)',
-//         timestamp: new Date().toISOString()
-//       },
-//       'Response success!'
-//     );
-//     /* End log */
-
-//     res.status(200).send('success!');
-//   } catch (err) {
-//     /* Start log */
-//     logger.customError(req, err);
-//     /* End log */
-
-//     res.status(400).send({
-//       status: 'failure',
-//       message: err.message
-//     });
-//   }
-// });
-
 // Basic health check endpoint
 app.get('/api/health', (req, res) => {
   if (req) console.log('ok');

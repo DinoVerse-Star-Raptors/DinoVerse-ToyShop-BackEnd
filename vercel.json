@@ -14,5 +14,12 @@
   ],
   "env": {
     "NODE_ENV": "production"
-  }
+  },
+  "headers": [
+    {
+      "for": "/api/*",
+      "key": "Access-Control-Allow-Origin",
+      "value": "http://localhost:3000, https://dinoface.vercel.app"
+    }
+  ]
 }

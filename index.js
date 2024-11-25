@@ -49,11 +49,29 @@ mongoose
 // app.use(express.json());
 
 // Set up CORS configuration
+// const corsOptions = {
+//   origin: 'https://dinoface.vercel.app', // This is the issue when using credentials
+//   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+//   allowedHeaders: ['Content-Type', 'Authorization'],
+//   credentials: true // Allow credentials
+// };
 const corsOptions = {
-  origin: 'https://dinoface.vercel.app', // This is the issue when using credentials
+  origin: (origin, callback) => {
+    // Allow both the production domain and localhost for development
+    const allowedOrigins = [
+      'https://dinoface.vercel.app',
+      'http://localhost:3000'
+    ];
+
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true); // Allow the request
+    } else {
+      callback(new Error('Not allowed by CORS')); // Deny the request
+    }
+  },
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true // Allow credentials
+  credentials: true // Allow credentials (cookies, authorization headers, etc.)
 };
 
 // Apply CORS middleware with options

@@ -4,7 +4,10 @@ import ageRoutes from '../routes/ageRoutes.js'; // Import the routes (add .js ex
 import devRoutes from '../routes/devRoutes.js';
 import productRoutes from '../routes/getProducts.js';
 import adminRoutes from '../routes/admin.js';
+import registerRoute from '../routes/register.js';
+import userRoutes from '../routes/user.js';
 // import logger from './config/logger.js';
+// const session = require('express-session');
 
 const router = express.Router();
 
@@ -34,6 +37,8 @@ router.use('/api/age-tags', ageRoutes); // Add the routes to the app
 router.use('/api/dev-tags', devRoutes);
 router.use('/api/products', productRoutes);
 router.use('/api/admin', adminRoutes);
+router.use('/api/register', registerRoute);
+router.use('/api/user', userRoutes);
 
 export default router;
 

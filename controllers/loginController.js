@@ -14,11 +14,10 @@ const loginSchema = z.object({
 
 dotenv.config(); // Load environment variables from .env file
 
-// Admin Login Controller to authenticate admin and issue JWT
-const loginAdminController = async (req, res) => {
+// User Login Controller to authenticate user and issue JWT
+const loginUserController = async (req, res) => {
   try {
-    const salt = process.env.PASSWORD_SALT || 'salt';
-    // const saltRounds = Number(process.env.SALT_ROUNDS) || 10;
+    const salt = process.env.PASSWORD_SALT || 'salt'; // Default salt value
 
     try {
       loginSchema.parse(req.body); // This will throw an error if validation fails
@@ -64,54 +63,39 @@ const loginAdminController = async (req, res) => {
         .json({ message: 'Invalid username or password' });
     }
 
-    // Step 4: Check if user is an admin
-    if (!user.isAdmin.statusAdmin) {
-      return res
-        .status(StatusCodes.FORBIDDEN)
-        .json({ message: 'You are not authorized as an admin' });
-    }
-
-    // const saltHash = await bcrypt.genSalt(Number(saltRounds)); // Generate a salt with 10 rounds
-    // const hash = bcrypt.hashSync(password + salt, saltHash);
-    // if (password) {
-    //   console.log(user.password, hash);
-    //   return res.status(200).json({ message: hash });
-    // }
-
-    // Step 5: Compare the provided password with the stored hashed password
+    // Step 4: Compare the provided password with the stored hashed password
     const isPasswordMatch = await bcrypt.compare(
       password + salt,
       user.password
     );
 
-    // Step 6: Handle password mismatch
+    // Step 5: Handle password mismatch
     if (!isPasswordMatch) {
-      console.log(isPasswordMatch, user.password);
-      return res
-        .status(StatusCodes.UNAUTHORIZED)
-        .json({ message: 'Invalid username or password' });
+      return res.status(StatusCodes.UNAUTHORIZED).json({
+        message: 'Invalid username or password -' + password + salt
+      });
     }
 
-    // Step 7: Generate JWT token for admin
+    // Step 6: Generate JWT token for user
     const token = jwt.sign(
       {
         userId: user._id, // Add user ID to payload
         username: user.username, // Add username to payload
-        isAdmin: user.isAdmin.statusAdmin // Add admin status to payload
+        isAdmin: user.isAdmin.statusAdmin // Add admin status to payload (if needed for any reason)
       },
       process.env.JWT_SECRET, // Secret key from .env file
       { expiresIn: '1h' } // Token expiration time (1 hour)
     );
 
-    // Step 8: Successfully logged in - Return user info and JWT token
+    // Step 7: Successfully logged in - Return user info and JWT token
     res.status(StatusCodes.OK).json({
-      message: 'Admin login successful',
+      message: 'User login successful',
       token, // Return the JWT token
       userId: user._id, // Return the user ID
       username: user.username, // Return the username
       fullname: user.fullname, // Return the fullname
-      email: user.email, // Return the email
-      isAdmin: user.isAdmin.statusAdmin // Return the admin status
+      email: user.email // Return the email
+      //   isAdmin: user.isAdmin.statusAdmin // Optionally return the admin status (if relevant)
     });
   } catch (error) {
     console.error(error);
@@ -122,16 +106,4 @@ const loginAdminController = async (req, res) => {
   }
 };
 
-export default loginAdminController;
-
-// {
-//   "username": "adminUser123",
-//   "password": "adminPassword123"
-// }
-
-// {
-//   "message": "Admin login successful",
-//   "token": "your_generated_jwt_token_here",
-//   "userId": "admin_user_id_here",
-//   "username": "adminUser123"
-// }
+export default loginUserController;

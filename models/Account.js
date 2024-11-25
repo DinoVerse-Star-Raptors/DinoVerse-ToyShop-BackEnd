@@ -2,7 +2,10 @@ import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs'; // For hashing passwords
 import validator from 'validator'; // For input validation
 import { nanoid } from 'nanoid'; // For generating unique user IDs
+import process from 'process';
+import dotenv from 'dotenv'; // To load environment variables
 
+dotenv.config(); // Load environment variables from .env file
 // Address schema
 const addressSchema = new mongoose.Schema(
   {
@@ -125,11 +128,11 @@ const userSchema = new mongoose.Schema(
       }
     },
     profilePicture: {
-      type: String,
-      validate: {
-        validator: (value) => validator.isURL(value),
-        message: 'Please provide a valid URL for the profile picture'
-      }
+      type: String
+      //   validate: {
+      //     validator: (value) => validator.isURL(value),
+      //     message: 'Please provide a valid URL for the profile picture'
+      //   }
     },
     // isAdmin: {
     //   type: Boolean,
@@ -185,8 +188,10 @@ const userSchema = new mongoose.Schema(
 userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next(); // Only hash password if it's modified
   try {
-    const salt = await bcrypt.genSalt(10); // Generate a salt with 10 rounds
-    this.password = await bcrypt.hash(this.password, salt); // Hash the password
+    // const salt = await bcrypt.genSalt(10); // Generate a salt with 10 rounds
+    const salt = process.env.PASSWORD_SALT || 'salt';
+    const saltRounds = Number(process.env.SALT_ROUNDS) || 10;
+    this.password = await bcrypt.hash(this.password + salt, saltRounds); // Hash the password
     next();
   } catch (error) {
     next(error); // Pass errors to the next middleware
@@ -194,9 +199,9 @@ userSchema.pre('save', async function (next) {
 });
 
 // Password comparison method
-userSchema.methods.matchPassword = async function (enteredPassword) {
-  return await bcrypt.compare(enteredPassword, this.password); // Compare the entered password with the stored hashed password
-};
+// userSchema.methods.matchPassword = async function (enteredPassword) {
+//   return await bcrypt.compare(enteredPassword, this.password); // Compare the entered password with the stored hashed password
+// };
 
 // Create and export User model
 const User = mongoose.model('User', userSchema);

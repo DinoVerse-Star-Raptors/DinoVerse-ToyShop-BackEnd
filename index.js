@@ -50,7 +50,7 @@ mongoose
 
 // Set up CORS configuration
 const corsOptions = {
-  origin: '*', // This is the issue when using credentials
+  origin: 'https://dinoface.vercel.app', // This is the issue when using credentials
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true // Allow credentials

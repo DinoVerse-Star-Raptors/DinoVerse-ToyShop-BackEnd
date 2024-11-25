@@ -22,14 +22,14 @@ const app = express();
 
 // Middleware to disable caching for all responses
 app.use((_, res, next) => {
-  // console.log(`Request received: ${req.method} ${req.url}`);
-  res.setHeader(
-    'Cache-Control',
-    'no-store, no-cache, must-revalidate, proxy-revalidate'
-  );
-  res.setHeader('Pragma', 'no-cache'); // For HTTP/1.0 compatibility
-  res.setHeader('Expires', '0'); // Date in the past
-  next();
+    // console.log(`Request received: ${req.method} ${req.url}`);
+    res.setHeader(
+        'Cache-Control',
+        'no-store, no-cache, must-revalidate, proxy-revalidate'
+    );
+    res.setHeader('Pragma', 'no-cache'); // For HTTP/1.0 compatibility
+    res.setHeader('Expires', '0'); // Date in the past
+    next();
 });
 
 // Serve static files (like favicon.ico) from the 'public' directory
@@ -41,9 +41,9 @@ app.use(express.static(path.join(process.cwd(), 'public')));
 // Database connection
 const dbURI = process.env.MONGODB_URI || 'mongodb://localhost:27017/ecommerce'; // Fallback to local MongoDB
 mongoose
-  .connect(dbURI)
-  .then(() => console.log('Connected to MongoDB'))
-  .catch((err) => console.error('Failed to connect to MongoDB:', err));
+    .connect(dbURI)
+    .then(() => console.log('Connected to MongoDB'))
+    .catch((err) => console.error('Failed to connect to MongoDB:', err));
 
 // Middleware to parse JSON requests
 app.use(express.json());
@@ -64,27 +64,27 @@ app.use(express.urlencoded({ extended: true }));
 
 // Handle POST request to /submit
 app.post('/submit', (req, res) => {
-  const formData = req.fields; // Access form data (text fields)
-  const uploadedFiles = req.files; // Access uploaded files
+    const formData = req.fields; // Access form data (text fields)
+    const uploadedFiles = req.files; // Access uploaded files
 
-  console.log('Form Data:', formData);
-  console.log('Uploaded Files:', uploadedFiles);
+    console.log('Form Data:', formData);
+    console.log('Uploaded Files:', uploadedFiles);
 
-  res.send({
-    message: 'Received the data',
-    formData,
-    uploadedFiles
-  });
+    res.send({
+        message: 'Received the data',
+        formData,
+        uploadedFiles
+    });
 });
 
 app.use('/', routes);
 
 // Handle serverless environment
 if (process.env.NODE_ENV !== 'production') {
-  const PORT = process.env.PORT || 3000;
-  app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-  });
+    const PORT = process.env.PORT || 3000;
+    app.listen(PORT, () => {
+        console.log(`Server is running on port ${PORT}`);
+    });
 }
 
 export default app;

@@ -1,10 +1,10 @@
 import express from 'express';
 import {
-  addItemToCart,
-  getCart,
-  updateCartItem,
-  removeItemFromCart,
-  clearCart
+    addItemToCart,
+    getCart,
+    updateCartItem,
+    removeItemFromCart,
+    clearCart
 } from '../controllers/cartController';
 import protect from '../middleware/auth'; // Protect routes
 

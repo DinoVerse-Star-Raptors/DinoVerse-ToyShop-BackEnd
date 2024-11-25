@@ -12,14 +12,14 @@ This is the backend for an eCommerce application built with **Node.js**, **Expre
 
 ## Table of Contents
 
-- [Prerequisites](#prerequisites)
-- [Installation](#installation)
-- [Project Structure](#project-structure)
-- [MongoDB Atlas Setup](#mongodb-atlas-setup)
-- [Environment Variables](#environment-variables)
-- [API Endpoints](#api-endpoints)
-- [Testing](#testing)
-- [License](#license)
+-   [Prerequisites](#prerequisites)
+-   [Installation](#installation)
+-   [Project Structure](#project-structure)
+-   [MongoDB Atlas Setup](#mongodb-atlas-setup)
+-   [Environment Variables](#environment-variables)
+-   [API Endpoints](#api-endpoints)
+-   [Testing](#testing)
+-   [License](#license)
 
 ---
 
@@ -27,9 +27,9 @@ This is the backend for an eCommerce application built with **Node.js**, **Expre
 
 To run this project locally, ensure you have the following installed:
 
-- [Node.js](https://nodejs.org/en/) (LTS version recommended)
-- [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) account for cloud database setup
-- [Postman](https://www.postman.com/) or any other API testing tool (optional for testing API endpoints)
+-   [Node.js](https://nodejs.org/en/) (LTS version recommended)
+-   [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) account for cloud database setup
+-   [Postman](https://www.postman.com/) or any other API testing tool (optional for testing API endpoints)
 
 ---
 
@@ -100,21 +100,21 @@ MongoDB Atlas provides a fully-managed, cloud-hosted MongoDB service.
 
 1. **Sign Up / Log in**: Create an account or log in to [MongoDB Atlas](https://www.mongodb.com/cloud/atlas).
 2. **Create a Cluster**:
-   - Click on "Build a Cluster".
-   - Select the free-tier (M0 Cluster) and choose a cloud provider and region.
+    - Click on "Build a Cluster".
+    - Select the free-tier (M0 Cluster) and choose a cloud provider and region.
 3. **Whitelist Your IP**:
 
-   - Go to "Network Access" > "IP Whitelist".
-   - Add your current IP address or allow all IPs (not recommended for production).
+    - Go to "Network Access" > "IP Whitelist".
+    - Add your current IP address or allow all IPs (not recommended for production).
 
 4. **Create a Database User**:
 
-   - Go to "Database Access".
-   - Create a new user with read/write access to your database and note down the credentials.
+    - Go to "Database Access".
+    - Create a new user with read/write access to your database and note down the credentials.
 
 5. **Get Connection String**:
-   - Go to "Clusters" > "Connect" > "Connect your application".
-   - Copy the connection string for Node.js and replace `<username>`, `<password>`, and `<dbname>` with your actual MongoDB Atlas credentials.
+    - Go to "Clusters" > "Connect" > "Connect your application".
+    - Copy the connection string for Node.js and replace `<username>`, `<password>`, and `<dbname>` with your actual MongoDB Atlas credentials.
 
 ---
 
@@ -127,9 +127,9 @@ MONGODB_URI=mongodb+srv://<username>:<password>@cluster0.mongodb.net/ecommerce?r
 PORT=5000  # Optional: specify the port for the server
 ```
 
-- Replace `<username>` and `<password>` with your MongoDB Atlas credentials.
-- Replace `ecommerce` with the name of the database you want to use.
-- You can also add other environment variables like JWT secrets, API keys, etc.
+-   Replace `<username>` and `<password>` with your MongoDB Atlas credentials.
+-   Replace `ecommerce` with the name of the database you want to use.
+-   You can also add other environment variables like JWT secrets, API keys, etc.
 
 ---
 
@@ -139,28 +139,28 @@ The API has the following routes:
 
 ### Authentication Routes
 
-- **POST** `/api/auth/register` – Register a new user
-- **POST** `/api/auth/login` – Login an existing user
+-   **POST** `/api/auth/register` – Register a new user
+-   **POST** `/api/auth/login` – Login an existing user
 
 ### Product Routes
 
-- **GET** `/api/products` – Get all products
-- **GET** `/api/products/:id` – Get a single product by ID
-- **POST** `/api/products` – Add a new product (Admin only)
-- **PUT** `/api/products/:id` – Update a product (Admin only)
-- **DELETE** `/api/products/:id` – Delete a product (Admin only)
+-   **GET** `/api/products` – Get all products
+-   **GET** `/api/products/:id` – Get a single product by ID
+-   **POST** `/api/products` – Add a new product (Admin only)
+-   **PUT** `/api/products/:id` – Update a product (Admin only)
+-   **DELETE** `/api/products/:id` – Delete a product (Admin only)
 
 ### Cart Routes
 
-- **GET** `/api/cart` – Get the user’s cart
-- **POST** `/api/cart/add` – Add an item to the cart
-- **POST** `/api/cart/remove` – Remove an item from the cart
-- **POST** `/api/cart/checkout` – Checkout cart and place an order
+-   **GET** `/api/cart` – Get the user’s cart
+-   **POST** `/api/cart/add` – Add an item to the cart
+-   **POST** `/api/cart/remove` – Remove an item from the cart
+-   **POST** `/api/cart/checkout` – Checkout cart and place an order
 
 ### Order Routes
 
-- **GET** `/api/orders` – Get user orders
-- **POST** `/api/orders` – Place a new order
+-   **GET** `/api/orders` – Get user orders
+-   **POST** `/api/orders` – Place a new order
 
 ---
 
@@ -175,9 +175,9 @@ You can use **Postman** or another API testing tool to test the API endpoints.
 
 ```json
 {
-  "username": "john_doe",
-  "email": "john@example.com",
-  "password": "password123"
+    "username": "john_doe",
+    "email": "john@example.com",
+    "password": "password123"
 }
 ```
 
@@ -185,12 +185,12 @@ If the request is successful, you should receive a response like:
 
 ```json
 {
-  "message": "User created successfully",
-  "user": {
-    "username": "john_doe",
-    "email": "john@example.com",
-    "_id": "60e6f7f81f4f5c001f6ad835"
-  }
+    "message": "User created successfully",
+    "user": {
+        "username": "john_doe",
+        "email": "john@example.com",
+        "_id": "60e6f7f81f4f5c001f6ad835"
+    }
 }
 ```
 

@@ -1,10 +1,10 @@
 import express from 'express';
 import {
-  createOrder,
-  getAllOrders,
-  getOrderById,
-  updateOrderStatus,
-  deleteOrder
+    createOrder,
+    getAllOrders,
+    getOrderById,
+    updateOrderStatus,
+    deleteOrder
 } from '../controllers/orderController';
 import protect from '../middleware/auth'; // Protect routes (optional)
 

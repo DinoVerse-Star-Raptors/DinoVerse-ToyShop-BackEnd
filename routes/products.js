@@ -1,10 +1,10 @@
 import express from 'express';
 import {
-  createProduct,
-  getAllProducts,
-  getProductById,
-  updateProduct,
-  deleteProduct
+    createProduct,
+    getAllProducts,
+    getProductById,
+    updateProduct,
+    deleteProduct
 } from '../controllers/productController';
 import protect from '../middleware/auth'; // Protect routes (optional)
 

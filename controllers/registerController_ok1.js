@@ -1,5 +1,5 @@
 import User from '../models/Account.js'; // Import the User model
-import bcrypt from 'bcryptjs';
+// import bcrypt from 'bcryptjs';
 import { nanoid } from 'nanoid';
 import { StatusCodes } from 'http-status-codes'; // Import named HTTP status codes
 import dotenv from 'dotenv'; // To load environment variables

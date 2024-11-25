@@ -10,7 +10,8 @@ import process from 'process';
 import path from 'path';
 import routes from './routes/index.js';
 // import bodyParser from 'body-parser';
-import formidable from 'express-formidable';
+// import formidable from 'express-formidable';
+import bodyParser from 'body-parser';
 
 // var bodyParser = require('body-parser');
 
@@ -35,7 +36,7 @@ app.use((_, res, next) => {
 app.use(express.static(path.join(process.cwd(), 'public')));
 
 // Serve static files from the 'public' directory
-app.use('/uploads', express.static(path.join(process.cwd(), 'public/uploads')));
+// app.use('/uploads', express.static(path.join(process.cwd(), 'public/uploads')));
 
 // Database connection
 const dbURI = process.env.MONGODB_URI || 'mongodb://localhost:27017/ecommerce'; // Fallback to local MongoDB
@@ -52,6 +53,7 @@ app.use(cors());
 app.use(helmet());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+// app.use(bodyParser.json()); // Parse application/json
 // app.use(
 //   formidable({
 //     uploadDir: './public/uploads', // Directory to store uploaded files

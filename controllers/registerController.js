@@ -2,14 +2,30 @@ import User from '../models/Account.js'; // Import the User model
 import { nanoid } from 'nanoid'; // For generating random IDs
 import { StatusCodes } from 'http-status-codes'; // HTTP status codes
 import dotenv from 'dotenv'; // To load environment variables
-// import process from 'process';
+import formidable from 'formidable'; // Import formidable for handling form data
 
 dotenv.config(); // Load environment variables from .env file
 
 // Register new user function
-export const registerUser = async (req, res) => {
-  try {
-    const { username, password, fullname, email, profilePictureURL } = req.body;
+export const registerUser = (req, res) => {
+  const form = new formidable.IncomingForm();
+
+  // Set the directory for file uploads if necessary
+  //   form.uploadDir = './uploads'; // You can set the directory where the files will be stored
+  //   form.keepExtensions = true; // Keep the file extension after upload
+
+  // Parse the form data
+  form.parse(req, async (err, fields, files) => {
+    if (err) {
+      console.error('Error parsing the form:', err);
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        message: 'Error parsing the form data.'
+      });
+    }
+
+    // Destructure form fields from 'fields' object
+    const { username, password, fullname, email, profilePictureURL } = fields;
+    console.log(fields); // Log form fields
 
     // Validate required fields
     if (!username || !password || !fullname || !email || !profilePictureURL) {
@@ -32,6 +48,16 @@ export const registerUser = async (req, res) => {
       });
     }
 
+    // Handle file upload (optional)
+    let profilePicture;
+    if (files.profilePicture) {
+      // If file is uploaded, you can store the file path or URL
+      profilePicture = `/uploads/${files.profilePicture.newFilename}`;
+    } else {
+      // If no file uploaded, use the profilePictureURL field
+      profilePicture = profilePictureURL;
+    }
+
     // Create and save the new user
     const newUser = new User({
       userId: nanoid(10),
@@ -39,15 +65,16 @@ export const registerUser = async (req, res) => {
       password,
       fullname,
       email,
-      profilePicture: profilePictureURL
+      profilePicture
     });
 
     try {
       await newUser.save();
     } catch (error) {
-      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-        message: 'Error saving the user to the database.'
-      });
+      if (error || !error)
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+          message: 'Error saving the user to the database.'
+        });
     }
 
     // Respond with the user details
@@ -58,14 +85,9 @@ export const registerUser = async (req, res) => {
         username: newUser.username,
         fullname: newUser.fullname,
         email: newUser.email,
-        profilePicture: profilePictureURL,
+        profilePicture: profilePicture,
         status: newUser.status
       }
     });
-  } catch (error) {
-    console.error('Error registering user:', error);
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-      message: 'Server error occurred while registering user.'
-    });
-  }
+  });
 };

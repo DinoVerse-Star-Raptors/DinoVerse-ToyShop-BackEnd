@@ -46,10 +46,21 @@ mongoose
   .catch((err) => console.error('Failed to connect to MongoDB:', err));
 
 // Middleware to parse JSON requests
-app.use(express.json());
+// app.use(express.json());
+
+// Set up CORS configuration
+const corsOptions = {
+  origin: '*', // This is the issue when using credentials
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true // Allow credentials
+};
+
+// Apply CORS middleware with options
+app.use(cors(corsOptions));
 
 // Middleware
-app.use(cors());
+// app.use(cors());
 app.use(helmet());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

@@ -18,9 +18,9 @@ app.use(helmet());
 // Database connection
 const dbURI = process.env.MONGODB_URI || 'mongodb://localhost:27017/ecommerce';
 mongoose
-    .connect(dbURI)
-    .then(() => console.log('Connected to MongoDB'))
-    .catch((err) => console.error('Failed to connect to MongoDB:', err));
+  .connect(dbURI)
+  .then(() => console.log('Connected to MongoDB'))
+  .catch((err) => console.error('Failed to connect to MongoDB:', err));
 
 // Admin authentication middleware
 // const isAdmin = (req, res, next) => {
@@ -39,7 +39,7 @@ mongoose
 
 // Example route
 app.get('/', (req, res) => {
-    res.send('This is my callback function');
+  res.send('This is my callback function');
 });
 
 // Sample route (uncomment once you have route files)
@@ -48,23 +48,23 @@ app.use('/api/products', productRoutes);
 
 // Global error handler
 app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).json({ message: 'Something went wrong!' });
-    if (next && req) console.log('next');
+  console.error(err.stack);
+  res.status(500).json({ message: 'Something went wrong!' });
+  if (next && req) console.log('next');
 });
 
 // Start the server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+  console.log(`Server is running on port ${PORT}`);
 });
 
 // Graceful shutdown on SIGINT
 process.on('SIGINT', () => {
-    mongoose.disconnect().then(() => {
-        console.log('MongoDB connection closed');
-        process.exit();
-    });
+  mongoose.disconnect().then(() => {
+    console.log('MongoDB connection closed');
+    process.exit();
+  });
 });
 
 // const express = require('express');

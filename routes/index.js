@@ -13,23 +13,23 @@ const router = express.Router();
 
 // Middleware to handle GET requests to the root endpoint
 router.get('/', (req, res) => {
-    res.send('Welcome to Dino Think on Vercel!');
-    if (req) console.log('Welcome to Dino Think');
+  res.send('Welcome to Dino Think on Vercel!');
+  if (req) console.log('Welcome to Dino Think');
 });
 
 // Basic health check endpoint
 router.get('/api/health', (req, res) => {
-    if (req) console.log('ok');
-    res.status(200).json({
-        status: 'ok',
-        timestamp: new Date().toISOString()
-    });
+  if (req) console.log('ok');
+  res.status(200).json({
+    status: 'ok',
+    timestamp: new Date().toISOString()
+  });
 });
 
 // Example API endpoints
 router.get('/api', (req, res) => {
-    if (req) console.log('Welcome to the API');
-    res.json({ message: 'Welcome to the API' });
+  if (req) console.log('Welcome to the API');
+  res.json({ message: 'Welcome to the API' });
 });
 
 // Use the routes 2024-11-16

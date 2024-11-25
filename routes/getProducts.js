@@ -4,8 +4,8 @@ const router = express.Router();
 
 // Import the controller functions using ES Module syntax (add .js extension)
 import {
-    getAllProducts,
-    getProductById
+  getAllProducts,
+  getProductById
 } from '../controllers/getProductController.js'; // Add .js extension
 
 // Route to get all products

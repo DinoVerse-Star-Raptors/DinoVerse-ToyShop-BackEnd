@@ -1,9 +1,9 @@
 import express from 'express';
 import {
-    register,
-    login,
-    getProfile,
-    logout
+  register,
+  login,
+  getProfile,
+  logout
 } from '../controllers/authController';
 import protect from '../middleware/auth'; // Protect routes with JWT authentication
 

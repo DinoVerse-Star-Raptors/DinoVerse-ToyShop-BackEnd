@@ -21,9 +21,9 @@ app.use('/api/v2', v2Routes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
-    console.error(err.stack);
-    if (next && req) console.error('Error handling middleware');
-    res.status(500).send('Something went wrong!');
+  console.error(err.stack);
+  if (next && req) console.error('Error handling middleware');
+  res.status(500).send('Something went wrong!');
 });
 
 // Export the app

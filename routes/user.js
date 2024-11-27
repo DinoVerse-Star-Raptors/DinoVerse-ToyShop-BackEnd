@@ -1,17 +1,7 @@
 import express from 'express';
 import { registerUser } from '../controllers/registerController.js';
 import loginUser from '../controllers/loginController.js';
-// import { protect } from '../middleware/auth'; // Protect routes
-// import {
-//   registerUser,
-//   loginUser,
-//   getUserProfile,
-//   updateUserProfile,
-//   deleteUserAccount,
-//   addAddress,
-//   getOrderHistory,
-//   addProductReview
-// } from '../controllers/userController';
+import { protect } from '../middleware/authMiddleware'; // Import protect middleware
 
 const router = express.Router();
 
@@ -21,22 +11,9 @@ router.post('/register', registerUser);
 // Login user
 router.post('/login', loginUser);
 
-// // Get user profile (requires authentication)
-// router.get('/profile', protect, getUserProfile);
-
-// // Update user profile (requires authentication)
-// router.put('/profile', protect, updateUserProfile);
-
-// // Delete user account (requires authentication)
-// router.delete('/profile', protect, deleteUserAccount);
-
-// // Add a new address (requires authentication)
-// router.post('/address', protect, addAddress);
-
-// // Get user order history (requires authentication)
-// router.get('/orders', protect, getOrderHistory);
-
-// // Add a product review (requires authentication)
-// router.post('/reviews', protect, addProductReview);
+// Test protected route (requires authentication)
+router.get('/testprotect', protect, (req, res) => {
+  res.json({ message: 'You are authenticated!', user: req.user });
+});
 
 export default router;

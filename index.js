@@ -45,71 +45,17 @@ mongoose
   .then(() => console.log('Connected to MongoDB'))
   .catch((err) => console.error('Failed to connect to MongoDB:', err));
 
-// Middleware to parse JSON requests
-// app.use(express.json());
-
-// Set up CORS configuration
-// const corsOptions = {
-//   origin: '*', // This is the issue when using credentials
-//   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH']
-//   //   allowedHeaders: ['Content-Type', 'Authorization'],
-//   //   credentials: true // Allow credentials
-// };
-// const corsOptions = {
-//   origin: (origin, callback) => {
-//     // Allow both the production domain and localhost for development
-//     const allowedOrigins = [
-//       'https://dinoface.vercel.app',
-//       'http://localhost:3000'
-//     ];
-
-//     if (allowedOrigins.includes(origin)) {
-//       callback(null, true); // Allow the request
-//     } else {
-//       callback(new Error('Not allowed by CORS')); // Deny the request
-//     }
-//   },
-//   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
-//   allowedHeaders: ['Content-Type', 'Authorization']
-//   //   credentials: true // Allow credentials (cookies, authorization headers, etc.)
-// };
-
-// Apply CORS middleware with options
-// app.use(cors(corsOptions));
-
 app.use(
   cors({
     origin: ['http://localhost:3000', 'https://dinoface.vercel.app'] // Allow both origins
   })
 );
+
 // Middleware
 // app.use(cors());
 app.use(helmet());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-// app.use(bodyParser.json()); // Parse application/json
-// app.use(
-//   formidable({
-//     uploadDir: './public/uploads', // Directory to store uploaded files
-//     keepExtensions: true, // Keep file extensions like .jpg, .png, etc.
-//     multiples: false // Allow multiple files to be uploaded at once
-//   })
-// );
-
-// Handle POST request to /submit
-app.post('/submit', (req, res) => {
-  const formData = req.fields; // Access form data (text fields)
-  const uploadedFiles = req.files; // Access uploaded files
-
-  console.log('Form Data:', formData);
-  console.log('Uploaded Files:', uploadedFiles);
-
-  res.send({
-    message: 'Received the data',
-    formData,
-    uploadedFiles
-  });
-});
 
 app.use('/', routes);
 

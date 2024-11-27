@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import User from '../models/Account'; // User model import
+import User from '../models/Account.js'; // User model import
 import process from 'process';
 import { StatusCodes } from 'http-status-codes'; // Using HTTP status codes for better readability
 

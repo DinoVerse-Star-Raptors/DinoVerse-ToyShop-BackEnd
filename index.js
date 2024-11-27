@@ -11,7 +11,7 @@ import path from 'path';
 import routes from './routes/index.js';
 // import bodyParser from 'body-parser';
 // import formidable from 'express-formidable';
-import bodyParser from 'body-parser';
+// import bodyParser from 'body-parser';
 
 // var bodyParser = require('body-parser');
 

@@ -5,7 +5,7 @@ import { StatusCodes } from 'http-status-codes'; // For better status codes
 
 // Helper function to get the cart for a user
 const getCartForUser = async (userId) => {
-  return await Cart.findOne({ user: userId });
+  return await Cart.findOne({ user: userId }).populate('items.product');
 };
 
 // Helper function to get a product by ID
@@ -13,19 +13,25 @@ const getProductById = async (productId) => {
   return await Product.findById(productId);
 };
 
+// Helper function to handle session transactions
+const startSessionAndTransaction = async () => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+  return session;
+};
+
 // Add item to the cart
 const addItemToCart = async (req, res) => {
   const { productId, quantity } = req.body;
-  const userId = req.user.id;
+  const userId = req.user._id;
+
+  if (!productId || !quantity || quantity <= 0) {
+    return res
+      .status(StatusCodes.BAD_REQUEST)
+      .json({ message: 'Invalid productId or quantity' });
+  }
 
   try {
-    // Validate inputs
-    if (!productId || !quantity || quantity <= 0) {
-      return res
-        .status(StatusCodes.BAD_REQUEST)
-        .json({ message: 'Invalid productId or quantity' });
-    }
-
     // Check if the product exists
     const product = await getProductById(productId);
     if (!product) {
@@ -34,33 +40,34 @@ const addItemToCart = async (req, res) => {
         .json({ message: 'Product not found' });
     }
 
-    // Start a session for atomic operations
-    const session = await mongoose.startSession();
-    session.startTransaction();
+    const session = await startSessionAndTransaction();
 
     let cart = await getCartForUser(userId);
     if (!cart) {
       cart = new Cart({ user: userId, items: [] });
     }
 
+    // Find the index of the product in the cart
     const existingItemIndex = cart.items.findIndex(
       (item) => item.product.toString() === productId
     );
 
     if (existingItemIndex > -1) {
-      cart.items[existingItemIndex].quantity += quantity; // Update quantity if product exists
+      // Update quantity if the product already exists in the cart
+      cart.items[existingItemIndex].quantity += quantity;
     } else {
-      cart.items.push({ product: productId, quantity }); // Add new item
+      // Add new item to the cart
+      cart.items.push({ product: productId, quantity });
     }
 
     await cart.save({ session });
     await session.commitTransaction();
     session.endSession();
 
-    const populatedCart = await Cart.findById(cart._id).populate(
-      'items.product'
-    );
-    res.status(StatusCodes.OK).json(populatedCart); // Return populated cart
+    // Return the populated cart after update
+    return res
+      .status(StatusCodes.OK)
+      .json(await Cart.findById(cart._id).populate('items.product'));
   } catch (error) {
     console.error(error);
     res
@@ -71,16 +78,16 @@ const addItemToCart = async (req, res) => {
 
 // Get the user's cart
 const getCart = async (req, res) => {
-  const userId = req.user.id;
+  const userId = req.user._id;
 
   try {
-    const cart = await Cart.findOne({ user: userId }).populate('items.product');
+    const cart = await getCartForUser(userId);
 
     if (!cart || cart.items.length === 0) {
       return res.status(StatusCodes.OK).json({ message: 'Cart is empty' });
     }
 
-    res.status(StatusCodes.OK).json(cart); // Return populated cart
+    return res.status(StatusCodes.OK).json(cart);
   } catch (error) {
     console.error(error);
     res
@@ -92,16 +99,17 @@ const getCart = async (req, res) => {
 // Update item quantity in the cart
 const updateCartItem = async (req, res) => {
   const { productId, quantity } = req.body;
-  const userId = req.user.id;
+  const userId = req.user._id;
+
+  if (!productId || !quantity || quantity <= 0) {
+    return res
+      .status(StatusCodes.BAD_REQUEST)
+      .json({ message: 'Invalid productId or quantity' });
+  }
 
   try {
-    if (!productId || !quantity || quantity <= 0) {
-      return res
-        .status(StatusCodes.BAD_REQUEST)
-        .json({ message: 'Invalid productId or quantity' });
-    }
-
     const cart = await getCartForUser(userId);
+
     if (!cart) {
       return res
         .status(StatusCodes.NOT_FOUND)
@@ -118,11 +126,14 @@ const updateCartItem = async (req, res) => {
         .json({ message: 'Item not found in the cart' });
     }
 
-    cart.items[itemIndex].quantity = quantity; // Update quantity
+    // Update item quantity in the cart
+    cart.items[itemIndex].quantity = quantity;
     await cart.save();
 
-    const updatedCart = await Cart.findById(cart._id).populate('items.product');
-    res.status(StatusCodes.OK).json(updatedCart); // Return updated cart
+    // Return the updated populated cart
+    return res
+      .status(StatusCodes.OK)
+      .json(await Cart.findById(cart._id).populate('items.product'));
   } catch (error) {
     console.error(error);
     res
@@ -134,10 +145,11 @@ const updateCartItem = async (req, res) => {
 // Remove item from cart
 const removeItemFromCart = async (req, res) => {
   const { productId } = req.body;
-  const userId = req.user.id;
+  const userId = req.user._id;
 
   try {
     const cart = await getCartForUser(userId);
+
     if (!cart) {
       return res
         .status(StatusCodes.NOT_FOUND)
@@ -147,17 +159,21 @@ const removeItemFromCart = async (req, res) => {
     const itemIndex = cart.items.findIndex(
       (item) => item.product.toString() === productId
     );
+
     if (itemIndex === -1) {
       return res
         .status(StatusCodes.NOT_FOUND)
         .json({ message: 'Item not found in the cart' });
     }
 
-    cart.items.splice(itemIndex, 1); // Remove the item from the cart
+    // Remove the item from the cart
+    cart.items.splice(itemIndex, 1);
     await cart.save();
 
-    const updatedCart = await Cart.findById(cart._id).populate('items.product');
-    res.status(StatusCodes.OK).json(updatedCart); // Return updated cart
+    // Return the updated populated cart
+    return res
+      .status(StatusCodes.OK)
+      .json(await Cart.findById(cart._id).populate('items.product'));
   } catch (error) {
     console.error(error);
     res
@@ -168,7 +184,7 @@ const removeItemFromCart = async (req, res) => {
 
 // Clear the cart
 const clearCart = async (req, res) => {
-  const userId = req.user.id;
+  const userId = req.user._id;
 
   try {
     const cart = await Cart.findOneAndUpdate(
@@ -183,7 +199,8 @@ const clearCart = async (req, res) => {
         .json({ message: 'Cart not found' });
     }
 
-    res.status(StatusCodes.OK).json(cart); // Return cleared cart
+    // Return the cleared cart
+    return res.status(StatusCodes.OK).json(cart);
   } catch (error) {
     console.error(error);
     res

@@ -6,6 +6,7 @@ import productRoutes from '../routes/getProducts.js';
 import adminRoutes from '../routes/admin.js';
 import registerRoute from '../routes/register.js';
 import userRoutes from '../routes/user.js';
+import cartRoutes from '../routes/cart.js';
 // import logger from './config/logger.js';
 // const session = require('express-session');
 
@@ -39,6 +40,7 @@ router.use('/api/products', productRoutes);
 router.use('/api/admin', adminRoutes);
 router.use('/api/register', registerRoute);
 router.use('/api/user', userRoutes);
+router.use('/api/cart', cartRoutes);
 
 export default router;
 

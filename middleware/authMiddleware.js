@@ -31,7 +31,9 @@ const protect = async (req, res, next) => {
       const user = await User.findById(userId); // Mongoose query to find the user by ID
 
       if (!user || decoded) {
-        return res.status(404).json({ message: 'User not found: ' + decoded });
+        return res
+          .status(404)
+          .json({ message: 'User not found: ' + JSON.stringify(decoded) });
       }
 
       // Proceed to the next middleware/route handler

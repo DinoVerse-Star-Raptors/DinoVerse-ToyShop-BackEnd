@@ -5,40 +5,25 @@ import { StatusCodes } from 'http-status-codes'; // For better status codes
 
 // Helper function to get the cart for a user
 const getCartForUser = async (userId) => {
+  if (!mongoose.Types.ObjectId.isValid(userId)) {
+    console.error('Invalid userId:', userId);
+    return null;
+  }
+
   try {
-    console.log('Looking for cart for userId:', userId); // Log userId for debugging
-    const cart = await Cart.findOne({ _id: userId });
-
-    if (!cart) {
-      console.error('Cart not found for userId:', userId); // Log when cart is not found
-      return null; // Return null instead of throwing an error
-    }
-
-    // Populate 'items.product' if the cart exists
-    await cart.populate('items.product');
-    return cart;
+    console.log('Looking for cart for userId:', userId);
+    const cart = await Cart.findOne({ user: userId }).populate('items.product');
+    return cart || null;
   } catch (error) {
     console.error('Error fetching cart for user:', error);
-    throw new Error('There was an issue retrieving the cart.');
+    throw new Error('Error retrieving cart');
   }
-};
-
-// Helper function to get a product by ID
-const getProductById = async (productId) => {
-  return await Product.findById(productId);
-};
-
-// Helper function to handle session transactions
-const startSessionAndTransaction = async () => {
-  const session = await mongoose.startSession();
-  session.startTransaction();
-  return session;
 };
 
 // Add item to the cart
 const addItemToCart = async (req, res) => {
   const { productId, quantity } = req.body;
-  const userId = req.user._id;
+  const userId = req.user._id || null;
 
   if (!userId) {
     return res
@@ -53,22 +38,21 @@ const addItemToCart = async (req, res) => {
   }
 
   try {
-    // Check if the product exists
-    const product = await getProductById(productId);
+    const product = await Product.findById(productId);
     if (!product) {
       return res
         .status(StatusCodes.NOT_FOUND)
         .json({ message: 'Product not found' });
     }
 
-    const session = await startSessionAndTransaction();
+    const session = await mongoose.startSession();
+    session.startTransaction();
 
     let cart = await getCartForUser(userId);
     if (!cart) {
-      cart = new Cart({ _id: userId, items: [] });
+      cart = new Cart({ user: userId, items: [] });
     }
 
-    // Find the index of the product in the cart
     const existingItemIndex = cart.items.findIndex(
       (item) => item.product.toString() === productId
     );
@@ -110,22 +94,18 @@ const getCart = async (req, res) => {
   try {
     const cart = await getCartForUser(userId);
 
-    // If no cart is found for the user, return a 'Cart not found' message
     if (!cart) {
       return res
         .status(StatusCodes.NOT_FOUND)
         .json({ message: 'Cart not found' });
     }
 
-    // If the cart is empty (has no items), return an 'Empty cart' message
     if (cart.items.length === 0) {
       return res.status(StatusCodes.OK).json({ message: 'Cart is empty' });
     }
 
-    // Return the populated cart if it has items
     return res.status(StatusCodes.OK).json(cart);
   } catch (error) {
-    // If any error occurs, log it and send a server error message
     console.error('Error fetching cart:', error);
     return res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
@@ -136,7 +116,7 @@ const getCart = async (req, res) => {
 // Update item quantity in the cart
 const updateCartItem = async (req, res) => {
   const { productId, quantity } = req.body;
-  const userId = req.user._id;
+  const userId = req.user._id || null;
 
   if (!userId) {
     return res
@@ -169,17 +149,15 @@ const updateCartItem = async (req, res) => {
         .json({ message: 'Item not found in the cart' });
     }
 
-    // Update item quantity in the cart
     cart.items[itemIndex].quantity = quantity;
     await cart.save();
 
-    // Return the updated populated cart
     return res
       .status(StatusCodes.OK)
       .json(await Cart.findById(cart._id).populate('items.product'));
   } catch (error) {
     console.error(error);
-    res
+    return res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ message: 'Server error' });
   }
@@ -188,7 +166,7 @@ const updateCartItem = async (req, res) => {
 // Remove item from cart
 const removeItemFromCart = async (req, res) => {
   const { productId } = req.body;
-  const userId = req.user._id;
+  const userId = req.user._id || null;
 
   if (!userId) {
     return res
@@ -215,17 +193,15 @@ const removeItemFromCart = async (req, res) => {
         .json({ message: 'Item not found in the cart' });
     }
 
-    // Remove the item from the cart
     cart.items.splice(itemIndex, 1);
     await cart.save();
 
-    // Return the updated populated cart
     return res
       .status(StatusCodes.OK)
       .json(await Cart.findById(cart._id).populate('items.product'));
   } catch (error) {
     console.error(error);
-    res
+    return res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ message: 'Server error' });
   }
@@ -233,7 +209,7 @@ const removeItemFromCart = async (req, res) => {
 
 // Clear the cart
 const clearCart = async (req, res) => {
-  const userId = req.user._id;
+  const userId = req.user._id || null;
 
   if (!userId) {
     return res
@@ -243,7 +219,7 @@ const clearCart = async (req, res) => {
 
   try {
     const cart = await Cart.findOneAndUpdate(
-      { _id: userId },
+      { user: userId },
       { $set: { items: [] } },
       { new: true }
     );
@@ -254,11 +230,10 @@ const clearCart = async (req, res) => {
         .json({ message: 'Cart not found' });
     }
 
-    // Return the cleared cart
     return res.status(StatusCodes.OK).json(cart);
   } catch (error) {
     console.error(error);
-    res
+    return res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ message: 'Server error' });
   }

@@ -5,7 +5,7 @@ import { StatusCodes } from 'http-status-codes'; // For better status codes
 
 // Helper function to get the cart for a user
 const getCartForUser = async (userId) => {
-  return await Cart.findOne({ user: userId }).populate('items.product');
+  return await Cart.findOne({ _id: userId }).populate('items.product');
 };
 
 // Helper function to get a product by ID

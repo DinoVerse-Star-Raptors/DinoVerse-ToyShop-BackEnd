@@ -44,7 +44,7 @@ const addItemToCart = async (req, res) => {
 
     let cart = await getCartForUser(userId);
     if (!cart) {
-      cart = new Cart({ user: userId, items: [] });
+      cart = new Cart({ _id: userId, items: [] });
     }
 
     // Find the index of the product in the cart
@@ -193,7 +193,7 @@ const clearCart = async (req, res) => {
 
   try {
     const cart = await Cart.findOneAndUpdate(
-      { user: userId },
+      { _id: userId },
       { $set: { items: [] } },
       { new: true }
     );

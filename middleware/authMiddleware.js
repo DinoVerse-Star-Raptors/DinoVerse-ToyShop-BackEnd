@@ -1,51 +1,74 @@
 import jwt from 'jsonwebtoken';
 import User from '../models/Account.js'; // User model import
-import process from 'process';
 import { StatusCodes } from 'http-status-codes'; // Using HTTP status codes for better readability
+import process from 'process';
 
 /**
  * Middleware to check if the user is authenticated (JWT token validation)
  */
 const protect = async (req, res, next) => {
-  // Initialize token variable
   let token;
 
-  // Check if the Authorization header exists and starts with 'Bearer'
+  // Check if Authorization header exists and starts with 'Bearer'
   if (
     req.headers.authorization &&
     req.headers.authorization.startsWith('Bearer')
   ) {
     try {
-      // Extract token from Authorization header
-      token = req.headers.authorization.split(' ')[1]; // Removes "Bearer" prefix
+      token = req.headers.authorization.split(' ')[1]; // Extract token from Bearer token
 
-      // Verify the token using the secret key stored in environment variables
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-      // Find the user by ID (exclude the password field)
-      //   req.user = await User.findById(decoded.id).select('-password');
-      // decoded is the payload of the JWT, which usually contains user info like userId
-      const userId = decoded.id; // Assuming the token contains the user's ID as 'id'
-
-      // Use the decoded userId in a Mongoose query to get the user's data
-      const user = await User.findById(userId); // Mongoose query to find the user by ID
-
-      if (!user || decoded) {
+      // If no token found
+      if (!token) {
         return res
-          .status(404)
-          .json({ message: 'User not found: ' + JSON.stringify(decoded) });
+          .status(StatusCodes.UNAUTHORIZED)
+          .json({ message: 'No token, authorization denied' });
       }
 
-      // Proceed to the next middleware/route handler
+      // Verify the token
+      const decoded = jwt.verify(token, process.env.JWT_SECRET); // Decoding JWT token
+
+      // Check if token has expired manually
+      const currentTime = Math.floor(Date.now() / 1000); // Current time in seconds
+      if (decoded.exp < currentTime) {
+        return res
+          .status(StatusCodes.UNAUTHORIZED)
+          .json({ message: 'Token has expired' });
+      }
+
+      // Attach user data to the request object based on decoded userId
+      req.user = await User.findById(decoded.userId).select('-password');
+
+      // If user is not found in the database
+      if (!req.user) {
+        return res
+          .status(StatusCodes.NOT_FOUND)
+          .json({ message: 'User not found' });
+      }
+
+      // Proceed to next middleware or route handler
       next();
-    } catch (err) {
-      console.error('Token verification failed:', err);
+    } catch (error) {
+      // Handle JWT verification errors
+      if (error instanceof jwt.TokenExpiredError) {
+        return res
+          .status(StatusCodes.UNAUTHORIZED)
+          .json({ message: 'Token has expired' });
+      }
+
+      if (error instanceof jwt.JsonWebTokenError) {
+        return res
+          .status(StatusCodes.UNAUTHORIZED)
+          .json({ message: 'Invalid token' });
+      }
+
+      // General error handling for any other issues
+      console.error(error);
       return res
-        .status(StatusCodes.UNAUTHORIZED)
-        .json({ message: 'Not authorized, token failed' });
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ message: 'Server error' });
     }
   } else {
-    // If token is missing or invalid
+    // If Authorization header is missing or token is invalid
     return res
       .status(StatusCodes.UNAUTHORIZED)
       .json({ message: 'Not authorized, no token' });
@@ -57,7 +80,7 @@ const protect = async (req, res, next) => {
  */
 const isAdmin = (req, res, next) => {
   if (req.user && req.user.isAdmin) {
-    // If the user is an admin, proceed to the next middleware/route handler
+    // If the user is an admin, proceed to the next middleware or route handler
     return next();
   } else {
     // If the user is not an admin, respond with a forbidden status

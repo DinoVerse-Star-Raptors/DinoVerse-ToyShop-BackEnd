@@ -5,7 +5,22 @@ import { StatusCodes } from 'http-status-codes'; // For better status codes
 
 // Helper function to get the cart for a user
 const getCartForUser = async (userId) => {
-  return await Cart.findOne({ _id: userId }).populate('items.product');
+  try {
+    console.log('Looking for cart for userId:', userId); // Log userId for debugging
+    const cart = await Cart.findOne({ _id: userId });
+
+    if (!cart) {
+      console.error('Cart not found for userId:', userId); // Log when cart is not found
+      return null; // Return null instead of throwing an error
+    }
+
+    // Populate 'items.product' if the cart exists
+    await cart.populate('items.product');
+    return cart;
+  } catch (error) {
+    console.error('Error fetching cart for user:', error);
+    throw new Error('There was an issue retrieving the cart.');
+  }
 };
 
 // Helper function to get a product by ID
@@ -24,6 +39,12 @@ const startSessionAndTransaction = async () => {
 const addItemToCart = async (req, res) => {
   const { productId, quantity } = req.body;
   const userId = req.user._id;
+
+  if (!userId) {
+    return res
+      .status(StatusCodes.BAD_REQUEST)
+      .json({ message: 'User ID is missing' });
+  }
 
   if (!productId || !quantity || quantity <= 0) {
     return res
@@ -78,24 +99,35 @@ const addItemToCart = async (req, res) => {
 
 // Get the user's cart
 const getCart = async (req, res) => {
-  const userId = req.user._id;
-  //   if (!userId || userId) {
-  //     return res
-  //       .status(StatusCodes.OK)
-  //       .json({ message: JSON.stringify(req.user) });
-  //   }
+  const userId = req.user._id || null;
+
+  if (!userId) {
+    return res
+      .status(StatusCodes.BAD_REQUEST)
+      .json({ message: 'User ID is missing' });
+  }
 
   try {
     const cart = await getCartForUser(userId);
 
-    if (!cart || cart.items.length === 0) {
+    // If no cart is found for the user, return a 'Cart not found' message
+    if (!cart) {
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ message: 'Cart not found' });
+    }
+
+    // If the cart is empty (has no items), return an 'Empty cart' message
+    if (cart.items.length === 0) {
       return res.status(StatusCodes.OK).json({ message: 'Cart is empty' });
     }
 
+    // Return the populated cart if it has items
     return res.status(StatusCodes.OK).json(cart);
   } catch (error) {
-    console.error(error);
-    res
+    // If any error occurs, log it and send a server error message
+    console.error('Error fetching cart:', error);
+    return res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ message: 'Server error' });
   }
@@ -105,6 +137,12 @@ const getCart = async (req, res) => {
 const updateCartItem = async (req, res) => {
   const { productId, quantity } = req.body;
   const userId = req.user._id;
+
+  if (!userId) {
+    return res
+      .status(StatusCodes.BAD_REQUEST)
+      .json({ message: 'User ID is missing' });
+  }
 
   if (!productId || !quantity || quantity <= 0) {
     return res
@@ -152,6 +190,12 @@ const removeItemFromCart = async (req, res) => {
   const { productId } = req.body;
   const userId = req.user._id;
 
+  if (!userId) {
+    return res
+      .status(StatusCodes.BAD_REQUEST)
+      .json({ message: 'User ID is missing' });
+  }
+
   try {
     const cart = await getCartForUser(userId);
 
@@ -190,6 +234,12 @@ const removeItemFromCart = async (req, res) => {
 // Clear the cart
 const clearCart = async (req, res) => {
   const userId = req.user._id;
+
+  if (!userId) {
+    return res
+      .status(StatusCodes.BAD_REQUEST)
+      .json({ message: 'User ID is missing' });
+  }
 
   try {
     const cart = await Cart.findOneAndUpdate(

@@ -79,6 +79,11 @@ const addItemToCart = async (req, res) => {
 // Get the user's cart
 const getCart = async (req, res) => {
   const userId = req.user._id;
+  if (!userId || userId) {
+    return res
+      .status(StatusCodes.OK)
+      .json({ message: JSON.stringify(req.user) });
+  }
 
   try {
     const cart = await getCartForUser(userId);

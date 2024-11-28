@@ -23,7 +23,8 @@ const protect = async (req, res, next) => {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
       // Find the user by ID (exclude the password field)
-      req.user = await User.findById(decoded.id).select('-password');
+      //   req.user = await User.findById(decoded.id).select('-password');
+      req.user = decoded.id;
 
       // Proceed to the next middleware/route handler
       next();

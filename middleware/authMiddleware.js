@@ -24,7 +24,15 @@ const protect = async (req, res, next) => {
 
       // Find the user by ID (exclude the password field)
       //   req.user = await User.findById(decoded.id).select('-password');
-      req.user = decoded.id;
+      // decoded is the payload of the JWT, which usually contains user info like userId
+      const userId = decoded.id; // Assuming the token contains the user's ID as 'id'
+
+      // Use the decoded userId in a Mongoose query to get the user's data
+      const user = await User.findById(userId); // Mongoose query to find the user by ID
+
+      if (!user || decoded) {
+        return res.status(404).json({ message: 'User not found: ' + decoded });
+      }
 
       // Proceed to the next middleware/route handler
       next();

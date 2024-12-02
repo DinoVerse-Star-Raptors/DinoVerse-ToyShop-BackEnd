@@ -84,7 +84,7 @@ const loginUserController = async (req, res) => {
         isAdmin: user.isAdmin.statusAdmin // Add admin status to payload (if needed for any reason)
       },
       process.env.JWT_SECRET, // Secret key from .env file
-      { expiresIn: '1h' } // Token expiration time (1 hour)
+      { expiresIn: '1d' } // Token expiration time (1 hour)
     );
 
     // Step 7: Successfully logged in - Return user info and JWT token

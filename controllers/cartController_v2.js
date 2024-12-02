@@ -22,10 +22,8 @@ const getCartForUser = async (userId) => {
 
 // Add item to the cart
 const addItemToCart = async (req, res) => {
-  let { productId, quantity } = req.body;
+  const { productId, quantity } = req.body;
   const userId = req.user._id || null;
-
-  quantity = Number(quantity);
 
   if (!userId) {
     return res
@@ -40,11 +38,7 @@ const addItemToCart = async (req, res) => {
   }
 
   try {
-    // const product = await Product.findById(productId);
-    // const product = await Product.find({ productId: productId });
-    const product = await Product.findOne({ productId: productId });
-
-    // console.log(product, productId);
+    const product = await Product.findById(productId);
     if (!product) {
       return res
         .status(StatusCodes.NOT_FOUND)
@@ -59,23 +53,16 @@ const addItemToCart = async (req, res) => {
       cart = new Cart({ user: userId, items: [] });
     }
 
-    let existingItemIndex = -1;
-
-    // If cart is empty, set the index to -1
-    if (cart.items.length > 0) {
-      existingItemIndex = cart.items.findIndex(
-        (item) => item?._id.toString() === product._id
-      );
-    }
-
-    // console.log(existingItemIndex);
+    const existingItemIndex = cart.items.findIndex(
+      (item) => item.product.toString() === productId
+    );
 
     if (existingItemIndex > -1) {
       // Update quantity if the product already exists in the cart
       cart.items[existingItemIndex].quantity += quantity;
     } else {
       // Add new item to the cart
-      cart.items.push({ product: product._id, quantity });
+      cart.items.push({ product: productId, quantity });
     }
 
     await cart.save({ session });
@@ -204,8 +191,8 @@ const updateCartItemQty = async (req, res) => {
 
     const itemIndex = cart.items.findIndex(
       (item) =>
-        item?._id.toString() === itemId &&
-        item?.product?._id.toString() === productId
+        item?._id.toString() === itemId.toString() &&
+        item?.product?._id.toString() === productId.toString()
     );
 
     if (itemIndex === -1) {

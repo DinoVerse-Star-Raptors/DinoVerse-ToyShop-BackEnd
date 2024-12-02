@@ -4,6 +4,7 @@ import {
   getCart,
   updateCartItem,
   removeItemFromCart,
+  updateCartItemQty,
   clearCart
 } from '../controllers/cartController.js';
 import { protect } from '../middleware/authMiddleware.js'; // Protect routes
@@ -18,7 +19,8 @@ router.get('/', protect, getCart); // Get user's cart
 router.post('/add', protect, addItemToCart); // Add item to cart
 router.put('/update', protect, updateCartItem); // Update cart item
 // router.delete('/remove', protect, removeItemFromCart); // Remove item from cart
-router.delete('/remove/:productId', protect, removeItemFromCart); // Remove item from cart
+router.delete('/remove/:itemId', protect, removeItemFromCart); // Remove item from cart
+router.patch('/update/:itemId', protect, updateCartItemQty);
 router.delete('/clear', protect, clearCart); // Clear the cart
 
 export default router;

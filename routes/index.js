@@ -9,6 +9,8 @@ import userRoutes from '../routes/user.js';
 import cartRoutes from '../routes/cart.js';
 // import logger from './config/logger.js';
 // const session = require('express-session');
+// import{ readdirSync } from"fs";
+// readdirSync("./Routes").map((r) => app.use("/api", require("./Routes/" + r)));
 
 const router = express.Router();
 

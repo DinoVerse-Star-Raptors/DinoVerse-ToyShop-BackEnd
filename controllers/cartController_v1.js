@@ -11,7 +11,7 @@ const getCartForUser = async (userId) => {
   }
 
   try {
-    // console.log('Looking for cart for userId:', userId);
+    console.log('Looking for cart for userId:', userId);
     const cart = await Cart.findOne({ user: userId }).populate('items.product');
     return cart || null;
   } catch (error) {
@@ -162,6 +162,50 @@ const updateCartItem = async (req, res) => {
       .json({ message: 'Server error' });
   }
 };
+
+// Remove item from cart
+// const removeItemFromCart = async (req, res) => {
+//   const { productId } = req.body;
+//   const userId = req.user._id || null;
+
+//   if (!userId) {
+//     return res
+//       .status(StatusCodes.BAD_REQUEST)
+//       .json({ message: 'User ID is missing' });
+//   }
+
+//   try {
+//     const cart = await getCartForUser(userId);
+
+//     if (!cart) {
+//       return res
+//         .status(StatusCodes.NOT_FOUND)
+//         .json({ message: 'Cart not found' });
+//     }
+
+//     const itemIndex = cart.items.findIndex(
+//       (item) => item.product.toString() === productId
+//     );
+
+//     if (itemIndex === -1) {
+//       return res
+//         .status(StatusCodes.NOT_FOUND)
+//         .json({ message: 'Item not found in the cart' });
+//     }
+
+//     cart.items.splice(itemIndex, 1);
+//     await cart.save();
+
+//     return res
+//       .status(StatusCodes.OK)
+//       .json(await Cart.findById(cart._id).populate('items.product'));
+//   } catch (error) {
+//     console.error(error);
+//     return res
+//       .status(StatusCodes.INTERNAL_SERVER_ERROR)
+//       .json({ message: 'Server error' });
+//   }
+// };
 
 const removeItemFromCart = async (req, res) => {
   const { productId } = req.params; // Changed to req.params for DELETE request

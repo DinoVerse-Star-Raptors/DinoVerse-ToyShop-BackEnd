@@ -183,8 +183,10 @@ const removeItemFromCart = async (req, res) => {
     }
 
     const itemIndex = cart.items.findIndex(
-      (item) => item.product.toString() === productId
+      (item) => item?.product?._id.toString() === productId.toString()
     );
+
+    // console.log(itemIndex);
 
     if (itemIndex === -1) {
       return res

@@ -18,7 +18,7 @@ router.get('/', protect, getCart); // Get user's cart
 router.post('/add', protect, addItemToCart); // Add item to cart
 router.put('/update', protect, updateCartItem); // Update cart item
 // router.delete('/remove', protect, removeItemFromCart); // Remove item from cart
-router.delete('/cart/:productId', protect, removeItemFromCart); // Remove item from cart
+router.delete('/remove/:productId', protect, removeItemFromCart); // Remove item from cart
 router.delete('/clear', protect, clearCart); // Clear the cart
 
 export default router;

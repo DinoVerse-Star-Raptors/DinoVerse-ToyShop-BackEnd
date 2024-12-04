@@ -7,6 +7,7 @@ import adminRoutes from '../routes/admin.js';
 import registerRoute from '../routes/register.js';
 import userRoutes from '../routes/user.js';
 import cartRoutes from '../routes/cart.js';
+import Validate from '../routes/validate.js';
 // import logger from './config/logger.js';
 // const session = require('express-session');
 // import{ readdirSync } from"fs";
@@ -43,5 +44,6 @@ router.use('/api/admin', adminRoutes);
 router.use('/api/register', registerRoute);
 router.use('/api/user', userRoutes);
 router.use('/api/cart', cartRoutes);
+router.use('/api/validate', Validate);
 
 export default router;

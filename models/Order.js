@@ -1,9 +1,8 @@
 import mongoose from 'mongoose';
-
-const { Schema } = mongoose;
+import addressSchema from './Address.js'; // Import the address schema
 
 // Define the OrderItem schema
-const orderItemSchema = new Schema({
+const orderItemSchema = new mongoose.Schema({
   product: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Product',
@@ -15,21 +14,35 @@ const orderItemSchema = new Schema({
 });
 
 // Define the Order schema
-const orderSchema = new Schema(
+const orderSchema = new mongoose.Schema(
   {
-    user: {
+    userId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
+      ref: 'User', // Reference to the User model
       required: true
     },
     items: [orderItemSchema],
-    shippingAddress: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Address'
+    amount: { type: Number, required: true },
+    address: {
+      type: addressSchema, // Use the addressSchema here for order addresses
+      required: true
     },
-    totalPrice: { type: Number, required: true },
-    status: { type: String, default: 'Pending' }, // Pending, Shipped, Delivered, etc.
-    createdAt: { type: Date, default: Date.now }
+    status: {
+      type: String,
+      required: true,
+      default: 'Order Placed',
+      enum: [
+        'Order Placed',
+        'Processing',
+        'Shipped',
+        'Delivered',
+        'Cancelled',
+        'Returned'
+      ]
+    },
+    paymentMethod: { type: String, required: true },
+    payment: { type: Boolean, required: true, default: false },
+    date: { type: Number, required: true } // Can be a timestamp
   },
   {
     timestamps: true // Adds createdAt and updatedAt fields automatically
@@ -37,7 +50,8 @@ const orderSchema = new Schema(
 );
 
 // Create the Order model
-const Order = mongoose.model('Order', orderSchema);
+const orderModel =
+  mongoose.models.order || mongoose.model('Order', orderSchema);
 
-// Export the Order model using ES Module syntax
-export default Order;
+// Export the Order model
+export default orderModel;

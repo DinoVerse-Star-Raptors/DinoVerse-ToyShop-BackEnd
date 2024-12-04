@@ -1,11 +1,9 @@
 import Order from '../models/Order'; // Assuming an Order model
 import Product from '../models/Product'; // Assuming a Product model
-// import User from '../models/User'; // Assuming a User model
 
 // Create a new order
 const createOrder = async (req, res) => {
   const { items, totalAmount, shippingAddress } = req.body; // Expecting an array of products (with productId, quantity) and a totalAmount
-
   const userId = req.user.id; // Assuming we get the user ID from the authenticated request
 
   try {
@@ -27,11 +25,11 @@ const createOrder = async (req, res) => {
 
     // Create the order
     const order = new Order({
-      user: userId,
+      userId,
       items,
       totalAmount,
       shippingAddress,
-      status: 'Pending' // Initial order status
+      status: 'Order Placed' // Initial order status
     });
 
     // Save the order to the database
@@ -40,8 +38,10 @@ const createOrder = async (req, res) => {
     // Deduct stock from products in the order
     for (let item of items) {
       const product = await Product.findById(item.productId);
-      product.stock -= item.quantity;
-      await product.save();
+      if (product) {
+        product.stock -= item.quantity;
+        await product.save();
+      }
     }
 
     res.status(201).json({ message: 'Order created successfully', order });
@@ -58,8 +58,8 @@ const getAllOrders = async (req, res) => {
   try {
     // If the user is an admin, return all orders; otherwise, return only their own orders
     const orders = req.user.isAdmin
-      ? await Order.find().populate('user', 'name email') // populate user information
-      : await Order.find({ user: userId }).populate('user', 'name email'); // Only the orders for this user
+      ? await Order.find().populate('userId', 'name email') // populate user information
+      : await Order.find({ userId }).populate('userId', 'name email'); // Only the orders for this user
 
     if (orders.length === 0) {
       return res.status(404).json({ message: 'No orders found' });
@@ -79,8 +79,8 @@ const getOrderById = async (req, res) => {
   try {
     // Fetch the order by ID
     const order = await Order.findById(id)
-      .populate('user', 'name email')
-      .populate('items.product', 'name price');
+      .populate('userId', 'name email')
+      .populate('items.productId', 'name price'); // populate product details
 
     if (!order) {
       return res.status(404).json({ message: 'Order not found' });
@@ -138,8 +138,10 @@ const deleteOrder = async (req, res) => {
     // Optionally, revert the stock changes if necessary (e.g., restock products)
     for (let item of order.items) {
       const product = await Product.findById(item.productId);
-      product.stock += item.quantity;
-      await product.save();
+      if (product) {
+        product.stock += item.quantity;
+        await product.save();
+      }
     }
 
     res.status(200).json({ message: 'Order deleted successfully' });

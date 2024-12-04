@@ -3,10 +3,58 @@ import bcrypt from 'bcryptjs'; // For hashing passwords
 import validator from 'validator'; // For input validation
 import { nanoid } from 'nanoid'; // For generating unique user IDs
 import process from 'process';
-import dotenv from 'dotenv'; // To load environment variable
-import addressSchema from './Address.js'; // Import the address schema
+import dotenv from 'dotenv'; // To load environment variables
 
 dotenv.config(); // Load environment variables from .env file
+// Address schema
+const addressSchema = new mongoose.Schema(
+  {
+    address: {
+      type: String,
+      default: '',
+      minlength: [3, 'Street address should be at least 3 characters']
+    },
+    province: {
+      type: String,
+      default: '',
+      minlength: [2, 'Province should be at least 2 characters']
+    },
+    country: {
+      type: String,
+      default: '',
+      minlength: [2, 'Country should be at least 2 characters']
+    },
+    zipcode: {
+      type: String,
+      default: '',
+      validate: {
+        validator: (value) => /^[1-9][0-9]{4}$/.test(value),
+        message: 'Please provide a valid 5-digit postal code'
+      }
+    },
+    recipientFullName: {
+      type: String,
+      required: [true, 'Recipient full name is required'],
+      minlength: [3, 'Recipient full name should be at least 3 characters']
+    },
+    recipientPhone: {
+      type: String,
+      required: [true, 'Recipient phone number is required'],
+      validate: {
+        validator: (value) => /^(0[1-9]{1})\d{8}$/.test(value), // Thai phone number format
+        message: 'Please provide a valid Thai phone number'
+      }
+    },
+    isDefault: {
+      type: Boolean,
+      default: false // Default to false (this address is not the default address by default)
+    }
+  },
+  {
+    _id: false, // Prevents the creation of an _id for each address
+    timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' } // Add timestamps to track creation and updates
+  }
+);
 
 // Define user schema
 const userSchema = new mongoose.Schema(
@@ -74,7 +122,7 @@ const userSchema = new mongoose.Schema(
       //   }
     },
     addresses: {
-      type: [addressSchema], // Using the imported address schema to store multiple addresses
+      type: [addressSchema], // Using the address schema to store multiple addresses
       default: []
     },
     lastLogin: {
@@ -122,6 +170,7 @@ const userSchema = new mongoose.Schema(
 userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next(); // Only hash password if it's modified
   try {
+    // const salt = await bcrypt.genSalt(10); // Generate a salt with 10 rounds
     const salt = process.env.PASSWORD_SALT || 'salt';
     const saltRounds = Number(process.env.SALT_ROUNDS) || 10;
     this.password = await bcrypt.hash(this.password + salt, saltRounds); // Hash the password
@@ -131,8 +180,12 @@ userSchema.pre('save', async function (next) {
   }
 });
 
+// Password comparison method
+// userSchema.methods.matchPassword = async function (enteredPassword) {
+//   return await bcrypt.compare(enteredPassword, this.password); // Compare the entered password with the stored hashed password
+// };
+
 // Create and export User model
 const User = mongoose.model('User', userSchema);
 
-// Export the User model
 export default User;

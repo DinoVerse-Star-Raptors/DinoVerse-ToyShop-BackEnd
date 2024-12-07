@@ -1,160 +1,98 @@
-import Order from '../models/Order'; // Assuming an Order model
-import Product from '../models/Product'; // Assuming a Product model
+import Order from "../models/order.js";
+import Cart from '../models/Cart.js';
+import mongoose from "mongoose";
 
-// Create a new order
-const createOrder = async (req, res) => {
-  const { items, totalAmount, shippingAddress } = req.body; // Expecting an array of products (with productId, quantity) and a totalAmount
-  const userId = req.user.id; // Assuming we get the user ID from the authenticated request
+// import Stripe from "stripe";
 
+// global variables
+// const currency = "thb";
+// const deliveryCharge = 20;
+
+// gateway initialize
+// const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+
+// Placing orders using Stripe Method
+const CODpayment = async (req, res) => {
   try {
-    // Validate that the products in the cart are available in stock
-    for (let item of items) {
-      const product = await Product.findById(item.productId);
-      if (!product) {
-        return res
-          .status(404)
-          .json({ message: `Product ${item.productId} not found` });
-      }
+    const { userId, items, amount, address } = req.body;
 
-      if (product.stock < item.quantity) {
-        return res.status(400).json({
-          message: `Not enough stock for product ${product.name}. Only ${product.stock} left.`
-        });
-      }
-    }
-
-    // Create the order
-    const order = new Order({
+    const orderData = {
       userId,
       items,
-      totalAmount,
-      shippingAddress,
-      status: 'Order Placed' // Initial order status
-    });
+      address,
+      amount,
+      paymentMethod: "COD",
+      payment: false,
+      date: Date.now(),
+    };
 
-    // Save the order to the database
-    await order.save();
+    const newOrder = new Order(orderData);
+    console.log("ตัวบน", newOrder);
+    await newOrder.save();
+    console.log("ตัวล่าง", newOrder);
 
-    // Deduct stock from products in the order
-    for (let item of items) {
-      const product = await Product.findById(item.productId);
-      if (product) {
-        product.stock -= item.quantity;
-        await product.save();
+
+    /*
+    const itemIds = items.map(item => item._id); // ตัวต้องการซื้อ
+    console.log("req.body items:", items) // มากับ req.body
+    console.log("itemIds:", itemIds);
+
+    const cartById = await Cart.findOne({ user: userId})
+    console.log("cartById:", cartById)
+
+    // Delete carts where _id is in the itemIds array
+    // const result = await Cart.updateOne({ _id: { $in: itemIds } });
+    const result = await Cart.updateOne({ user: userId}, {$set:{items:[]}});
+    console.log(result)
+    */
+
+    const itemIdsToRemove = items.map(item => item._id);
+    console.log('ไอดีไอเทมที่เราต้องการกำจัด', itemIdsToRemove);
+
+    // Remove the items from the cart
+    const result = await Cart.updateOne(
+      { user: userId },
+      {
+        $pull: {
+          items: {
+            _id: { $in: itemIdsToRemove } // Remove items with matching product IDs
+          }
+        }
       }
-    }
-
-    res.status(201).json({ message: 'Order created successfully', order });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
-  }
-};
-
-// Get all orders (for an admin or a user)
-const getAllOrders = async (req, res) => {
-  const userId = req.user.id;
-
-  try {
-    // If the user is an admin, return all orders; otherwise, return only their own orders
-    const orders = req.user.isAdmin
-      ? await Order.find().populate('userId', 'name email') // populate user information
-      : await Order.find({ userId }).populate('userId', 'name email'); // Only the orders for this user
-
-    if (orders.length === 0) {
-      return res.status(404).json({ message: 'No orders found' });
-    }
-
-    res.status(200).json(orders);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
-  }
-};
-
-// Get order by ID
-const getOrderById = async (req, res) => {
-  const { id } = req.params; // Order ID from URL
-
-  try {
-    // Fetch the order by ID
-    const order = await Order.findById(id)
-      .populate('userId', 'name email')
-      .populate('items.productId', 'name price'); // populate product details
-
-    if (!order) {
-      return res.status(404).json({ message: 'Order not found' });
-    }
-
-    res.status(200).json(order);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
-  }
-};
-
-// Update order status (e.g., from "Pending" to "Shipped")
-const updateOrderStatus = async (req, res) => {
-  const { id } = req.params;
-  const { status } = req.body; // New status (e.g., "Shipped", "Delivered")
-
-  const allowedStatuses = ['Pending', 'Shipped', 'Delivered', 'Cancelled'];
-
-  if (!allowedStatuses.includes(status)) {
-    return res.status(400).json({ message: 'Invalid order status' });
-  }
-
-  try {
-    // Find the order and update the status
-    const order = await Order.findByIdAndUpdate(
-      id,
-      { status },
-      { new: true } // Return the updated document
     );
+    console.log(result);
 
-    if (!order) {
-      return res.status(404).json({ message: 'Order not found' });
-    }
-
-    res.status(200).json({ message: 'Order status updated', order });
+    res.json({ success: true, message: newOrder });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
+    console.log(error);
+    res.json({ success: false, message: error.message });
   }
 };
 
-// Delete an order (e.g., cancel an order)
-const deleteOrder = async (req, res) => {
-  const { id } = req.params;
-
+/*
+// User Order Data For Frontend
+const userOrders = async (req, res) => {
   try {
-    // Find and delete the order
-    const order = await Order.findByIdAndDelete(id);
-
-    if (!order) {
-      return res.status(404).json({ message: 'Order not found' });
-    }
-
-    // Optionally, revert the stock changes if necessary (e.g., restock products)
-    for (let item of order.items) {
-      const product = await Product.findById(item.productId);
-      if (product) {
-        product.stock += item.quantity;
-        await product.save();
-      }
-    }
-
-    res.status(200).json({ message: 'Order deleted successfully' });
+    const { userId } = req.body;
+    const orders = await orderModel.find({ userId });
+    res.json({ success: true, orders });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
+    console.log(error);
+    res.json({ success: false, message: error.message });
   }
 };
 
-export {
-  createOrder,
-  getAllOrders,
-  getOrderById,
-  updateOrderStatus,
-  deleteOrder
+// update order status from Admin Panel
+const updateStatus = async (req, res) => {
+  try {
+    const { orderId, status } = req.body;
+    await orderModel.findByIdAndUpdate(orderId, { status });
+    res.json({ success: true, message: "Status Updated" });
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: error.message });
+  }
 };
+*/
+
+export { CODpayment };

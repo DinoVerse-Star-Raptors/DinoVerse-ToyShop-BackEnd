@@ -3,15 +3,9 @@ import express from 'express';
 import ageRoutes from '../routes/ageRoutes.js'; // Import the routes (add .js extension)
 import devRoutes from '../routes/devRoutes.js';
 import productRoutes from '../routes/getProducts.js';
-import adminRoutes from '../routes/admin.js';
-import registerRoute from '../routes/register.js';
 import userRoutes from '../routes/user.js';
 import cartRoutes from '../routes/cart.js';
-import Validate from '../routes/validate.js';
-// import logger from './config/logger.js';
-// const session = require('express-session');
-// import{ readdirSync } from"fs";
-// readdirSync("./Routes").map((r) => app.use("/api", require("./Routes/" + r)));
+import orderRoutes from '../routes/orderRoutes.js';
 
 const router = express.Router();
 
@@ -36,14 +30,12 @@ router.get('/api', (req, res) => {
   res.json({ message: 'Welcome to the API' });
 });
 
-// Use the routes 2024-11-16
-router.use('/api/age-tags', ageRoutes); // Add the routes to the app
-router.use('/api/dev-tags', devRoutes);
-router.use('/api/products', productRoutes);
-router.use('/api/admin', adminRoutes);
-router.use('/api/register', registerRoute);
-router.use('/api/user', userRoutes);
-router.use('/api/cart', cartRoutes);
-router.use('/api/validate', Validate);
+router.use('/api/age-tags', ageRoutes); // แสดงสินค้า ตามอายุ
+router.use('/api/dev-tags', devRoutes); //  แสดงสินค้า ตามพัฒนาการ
+router.use('/api/products', productRoutes); // หน้า all products, หน้า product info
+router.use('/api/user', userRoutes); // register and login
+router.use('/api/cart', cartRoutes); // หน้า cart
+router.use('/api/order', orderRoutes);
+// payment
 
 export default router;

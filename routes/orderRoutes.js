@@ -1,6 +1,6 @@
 import express from "express";
 
-import { CODpayment} from "../controllers/orderController.js";
+import { CODpayment , userOrders} from "../controllers/orderController.js";
 
 
 const orderRouter = express.Router();
@@ -20,6 +20,7 @@ orderRouter.post("/verifyStripe", authUser, verifyStripe);
 */
 
 orderRouter.post("/cod", CODpayment);
+orderRouter.post("/myOrder", userOrders);
 
 
 export default orderRouter;

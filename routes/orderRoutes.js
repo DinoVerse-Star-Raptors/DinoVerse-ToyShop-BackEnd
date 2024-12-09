@@ -1,6 +1,6 @@
 import express from "express";
 
-import { CODpayment , userOrders} from "../controllers/orderController.js";
+import { CODpayment , userOrders , stripepayment} from "../controllers/orderController.js";
 
 
 const orderRouter = express.Router();
@@ -17,9 +17,10 @@ orderRouter.post("/userorders", authUser, userOrders);
 
 // verify payment
 orderRouter.post("/verifyStripe", authUser, verifyStripe);
-*/
 
+*/
 orderRouter.post("/cod", CODpayment);
+orderRouter.post("/stripe", stripepayment);
 orderRouter.post("/myOrder", userOrders);
 
 

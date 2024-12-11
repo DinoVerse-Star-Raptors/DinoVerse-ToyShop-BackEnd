@@ -1,6 +1,7 @@
 import Order from '../models/orderModel.js';
 import Cart from '../models/Cart.js';
-import mongoose from 'mongoose';
+// import mongoose from 'mongoose';
+import process from 'process';
 import Stripe from 'stripe';
 // import { mode } from 'crypto-js';
 
@@ -82,6 +83,7 @@ const stripepayment = async (req, res) => {
       payment: false,
       date: Date.now()
     };
+    console.log('ไอเทม', items);
 
     const newOrder = new Order(orderData);
     // console.log("ตัวบน", newOrder);
@@ -92,7 +94,7 @@ const stripepayment = async (req, res) => {
     // console.log('ไอดีไอเทมที่เราต้องการกำจัด', itemIdsToRemove);
 
     // Remove the items from the cart
-    const result = await Cart.updateOne(
+    await Cart.updateOne(
       { user: userId },
       {
         $pull: {
@@ -102,8 +104,20 @@ const stripepayment = async (req, res) => {
         }
       }
     );
-    console.log('ไอเทม', items);
 
+    const line_items = items.map((item) => ({
+      price_data: {
+        currency: currency,
+        product_data: {
+          name: item.product.name,
+        },
+        unit_amount: item.product.price * 100,
+      },
+      quantity: item.quantity,
+    }));
+    console.log('ไลน์ไอเทม', line_items);
+
+    /*
     const line_items = items.map((item) => ({
       price_data: {
         currency: 'usd',
@@ -114,41 +128,42 @@ const stripepayment = async (req, res) => {
       },
       quantity: 1 // จำนวนสินค้า
     }));
+    */
 
-    console.log('ไลน์ไอเทม', line_items);
-    // line_items.push({
-    //   price_data: {
-    //     currency: currency,
-    //     product_data: {
-    //       name: "Delivery Charges",
-    //     },
-    //     unit_amount: 20,
-    //   },
-    //   quantity: 1,
-    // });
-    //console.log(line_items);
+    line_items.push({
+      price_data: {
+        currency: currency,
+        product_data: {
+          name: "Delivery Charges",
+        },
+        unit_amount: deliveryCharge * 100,
+      },
+      quantity: 1,
+    });
+
+    /*
+    line_items.push({
+      price_data: {
+        currency: currency,
+        product_data: {
+          name: "Delivery Charges",
+        },
+        unit_amount: 20,
+      },
+      quantity: 1,
+    });
+    */
+    console.log(line_items);
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
-      line_items: [...line_items],
+      line_items,
       mode: 'payment',
       success_url: `${origin}/verify?success=true&orderId=${newOrder._id}`,
       cancel_url: `${origin}/verify?success=false&orderId=${newOrder._id}`
     });
 
-    // const session = await stripe.checkout.sessions.create({
-    //   payment_method_types: ['card'], // ประเภทการชำระเงินที่รองรับ
-    //   mode: 'payment', // โหมดชำระเงิน
-    //   line_items: [
-
-    //   ],
-    //   success_url: 'https://your-site.com/success', // URL หลังชำระเงินสำเร็จ
-    //   cancel_url: 'https://your-site.com/cancel' // URL หลังยกเลิกการชำระเงิน
-    // });
-
-    // res.json({ success: true, session_url: session.url });
-
-    res.json({ success: true, message: newOrder });
+    res.status(201).json({ success: true, session_url: session.url });
   } catch (error) {
     console.log(error);
     res.json({ success: false, message: error.message });

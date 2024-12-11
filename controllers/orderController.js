@@ -181,4 +181,23 @@ const userOrders = async (req, res) => {
   }
 };
 
-export { CODpayment, userOrders, stripepayment };
+// Verify Stripe
+const verifyStripe = async (req, res) => {
+  const { orderId, success} = req.body;
+
+  try {
+    if (success === "true") {
+      await Order.findByIdAndUpdate(orderId, { payment: true });
+      // await userModel.findByIdAndUpdate(userId, { cartData: {} });
+      res.json({ success: true });
+    } else {
+      await Order.findByIdAndDelete(orderId);
+      res.json({ success: false });
+    }
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: error.message });
+  }
+};
+
+export { CODpayment, userOrders, stripepayment, verifyStripe };

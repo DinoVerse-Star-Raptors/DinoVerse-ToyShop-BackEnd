@@ -36,6 +36,5 @@ router.use('/api/products', productRoutes); // หน้า all products, หน
 router.use('/api/user', userRoutes); // register and login
 router.use('/api/cart', cartRoutes); // หน้า cart
 router.use('/api/order', orderRoutes);
-// payment
 
 export default router;

@@ -91,11 +91,14 @@ const loginUserController = async (req, res) => {
     res.status(StatusCodes.OK).json({
       message: 'User login successful',
       token, // Return the JWT token
+      profilePicture: user.profilePicture,
       userId: user._id, // Return the user ID
       username: user.username, // Return the username
       fullname: user.fullname, // Return the fullname
-      email: user.email // Return the email
-      //   isAdmin: user.isAdmin.statusAdmin // Optionally return the admin status (if relevant)
+      email: user.email,
+      phone: user.phone,
+      gender: user.gender, // Return the email
+      isAdmin: user.isAdmin.statusAdmin // Optionally return the admin status (if relevant)
     });
   } catch (error) {
     console.error(error);
